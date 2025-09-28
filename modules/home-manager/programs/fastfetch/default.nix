@@ -5,7 +5,7 @@
     enable = true;
     settings = {
       logo = {
-        type = "none";
+        type = "auto";
       };
       display = {
         separator = "->   ";
