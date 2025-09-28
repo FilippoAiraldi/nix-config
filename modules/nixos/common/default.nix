@@ -96,10 +96,12 @@
     byobu
     curl
     gcc
+    git
     gnumake
     htop
     neovim
     ripgrep
+    tmux
     wget
     xclip
   ];

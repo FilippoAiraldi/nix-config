@@ -6,11 +6,8 @@
 }:
 {
   imports = [
-    ../programs/alacritty
     ../programs/atuin
     ../programs/bat
-    ../programs/brave
-    ../programs/btop
     ../programs/fastfetch
     ../programs/fzf
     ../programs/git
@@ -54,24 +51,10 @@
   home.packages =
     with pkgs;
     [
-      anki-bin
-      awscli2
-      dig
       du-dust
       eza
       fd
-      jq
-      kubectl
-      lazydocker
-      nh
-      openconnect
-      pipenv
-      python3
-      ripgrep
-      terraform
-      tesseract
       unzip
-      wl-clipboard
     ];
 
   # Catpuccin flavor and accent
