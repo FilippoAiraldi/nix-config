@@ -93,13 +93,15 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
-    wget
-    htop
+    byobu
     curl
     gcc
-    xclip
+    htop
     make
     nvim
+    ripgrep
+    wget
+    xclip
   ];
 
   # Zsh configuration
