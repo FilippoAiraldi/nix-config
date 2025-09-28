@@ -32,10 +32,8 @@
       # Define user configurations
       users = {
         fairaldi = {
-          avatar = ./files/avatar/face;
           email = "filippoairaldi@gmail.com";
           fullName = "Filippo Airaldi";
-          gitKey = "C5810093";
           name = "fairaldi";
         };
       };

@@ -11,15 +11,12 @@
     ../programs/fastfetch
     ../programs/fzf
     ../programs/git
-    ../programs/go
     ../programs/gpg
     ../programs/k9s
     ../programs/krew
     ../programs/lazygit
     ../programs/neovim
-    ../programs/obs-studio
     ../programs/starship
-    ../programs/telegram
     ../programs/tmux
     ../programs/zsh
     ../scripts
