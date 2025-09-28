@@ -9,7 +9,7 @@
   networking.hostName = hostname;
 
   # To support old GPU, the kernel must also be quite old
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_1;
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_12;
 
   # Enable NVIDIA GPU (https://nixos.wiki/wiki/Nvidia)
   hardware.graphics.enable = true;
