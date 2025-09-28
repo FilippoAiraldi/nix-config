@@ -17,13 +17,6 @@
     # Global catppuccin theme
     catppuccin.url = "github:catppuccin/nix";
 
-    # Declarative kde plasma manager
-    plasma-manager = {
-      url = "github:AlexNabokikh/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
-
     # Nix Darwin (for MacOS machines)
     darwin = {
       url = "github:LnL7/nix-darwin";
