@@ -120,7 +120,10 @@
   services.locate.enable = true;
 
   # OpenSSH daemon
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings.X11Forwarding = true;
+  };
 
   # Tailscale
   services.tailscale.enable = true;
