@@ -14,8 +14,6 @@ return {
           filetypes = {
             "css",
             "markdown",
-            "yaml.docker-compose",
-            "yaml.kubernetes",
             "yaml",
           },
         }),

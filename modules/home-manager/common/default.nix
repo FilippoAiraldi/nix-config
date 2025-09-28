@@ -18,7 +18,6 @@
     ../programs/lazygit
     ../programs/neovim
     ../programs/obs-studio
-    ../programs/saml2aws
     ../programs/starship
     ../programs/telegram
     ../programs/tmux

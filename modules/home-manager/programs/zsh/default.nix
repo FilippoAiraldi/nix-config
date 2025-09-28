@@ -19,35 +19,6 @@
       ggl = "git pull";
       ggp = "git push";
 
-      # kubectl
-      k = "kubectl";
-      kgno = "kubectl get node";
-      kdno = "kubectl describe node";
-      kgp = "kubectl get pods";
-      kep = "kubectl edit pods";
-      kdp = "kubectl describe pods";
-      kdelp = "kubectl delete pods";
-      kgs = "kubectl get svc";
-      kes = "kubectl edit svc";
-      kds = "kubectl describe svc";
-      kdels = "kubectl delete svc";
-      kgi = "kubectl get ingress";
-      kei = "kubectl edit ingress";
-      kdi = "kubectl describe ingress";
-      kdeli = "kubectl delete ingress";
-      kgns = "kubectl get namespaces";
-      kens = "kubectl edit namespace";
-      kdns = "kubectl describe namespace";
-      kdelns = "kubectl delete namespace";
-      kgd = "kubectl get deployment";
-      ked = "kubectl edit deployment";
-      kdd = "kubectl describe deployment";
-      kdeld = "kubectl delete deployment";
-      kgsec = "kubectl get secret";
-      kdsec = "kubectl describe secret";
-      kdelsec = "kubectl delete secret";
-
-      ld = "lazydocker";
       lg = "lazygit";
 
       repo = "cd $HOME/Documents/repositories";
@@ -63,9 +34,6 @@
       lt = "eza --tree --level=2 --icons"; # tree
     };
     initContent = ''
-      # kubectl auto-complete
-      source <(kubectl completion zsh)
-
       # bindings
       bindkey -e
       bindkey '^H' backward-delete-word
