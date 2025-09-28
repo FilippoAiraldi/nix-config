@@ -34,12 +34,4 @@
       yaml-language-server
     ];
   };
-
-  # source lua config from this repo
-  xdg.configFile = {
-    "nvim" = {
-      source = ./lazyvim;
-      recursive = true;
-    };
-  };
 }
