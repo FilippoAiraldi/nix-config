@@ -11,7 +11,6 @@
     ../programs/fastfetch
     ../programs/fzf
     ../programs/git
-    ../programs/lazygit
     ../programs/neovim
     ../programs/starship
     ../programs/tmux

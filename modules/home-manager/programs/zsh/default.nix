@@ -19,11 +19,6 @@
       ggl = "git pull";
       ggp = "git push";
 
-      lg = "lazygit";
-
-      repo = "cd $HOME/Documents/repositories";
-      temp = "cd $HOME/Downloads/temp";
-
       v = "nvim";
       vi = "nvim";
       vim = "nvim";
