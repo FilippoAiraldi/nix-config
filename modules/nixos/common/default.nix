@@ -41,17 +41,12 @@
   # Boot settings
   boot = {
     kernelPackages = pkgs.linuxKernel.packages.linux_6_16;
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-    kernelParams = [
-      "quiet"
-      "splash"
-      "rd.udev.log_level=3"
-    ];
+    consoleLogLevel = 4;
+    initrd.verbose = true;
+    kernelParams = [ "splash" ];
     loader.efi.canTouchEfiVariables = true;
     loader.systemd-boot.enable = true;
     loader.timeout = 5;
-    plymouth.enable = true;
   };
 
   # Networking
@@ -60,7 +55,6 @@
   # Disable systemd services that are affecting the boot time
   systemd.services = {
     NetworkManager-wait-online.enable = false;
-    plymouth-quit-wait.enable = false;
   };
 
   # Timezone
