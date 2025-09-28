@@ -93,11 +93,11 @@
 
   # System packages
   environment.systemPackages = with pkgs; [
+    wget
+    htop
+    curl
     gcc
-    glib
-    gnumake
-    killall
-    mesa
+    xclip
   ];
 
   # Zsh configuration
