@@ -96,9 +96,9 @@
     byobu
     curl
     gcc
+    gnumake
     htop
-    make
-    nvim
+    neovim
     ripgrep
     wget
     xclip
