@@ -11,9 +11,6 @@
     ../programs/fastfetch
     ../programs/fzf
     ../programs/git
-    ../programs/gpg
-    ../programs/k9s
-    ../programs/krew
     ../programs/lazygit
     ../programs/neovim
     ../programs/starship
