@@ -47,8 +47,7 @@
   home = {
     stateVersion = "25.11";
     username = "${userConfig.name}";
-    homeDirectory =
-      if pkgs.stdenv.isDarwin then "/Users/${userConfig.name}" else "/home/${userConfig.name}";
+    homeDirectory = "/home/${userConfig.name}";
   };
 
   # Ensure common packages are installed
@@ -70,15 +69,6 @@
       python3
       ripgrep
       terraform
-    ]
-    ++ lib.optionals stdenv.isDarwin [
-      colima
-      docker
-      hidden-bar
-      mos
-      raycast
-    ]
-    ++ lib.optionals (!stdenv.isDarwin) [
       tesseract
       unzip
       wl-clipboard

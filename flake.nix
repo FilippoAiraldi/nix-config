@@ -1,5 +1,5 @@
 {
-  description = "NixOS and nix-darwin configs for my machines";
+  description = "NixOS config for my machines";
   inputs = {
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -16,19 +16,12 @@
 
     # Global catppuccin theme
     catppuccin.url = "github:catppuccin/nix";
-
-    # Nix Darwin (for MacOS machines)
-    darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     {
       self,
       catppuccin,
-      darwin,
       home-manager,
       nixpkgs,
       ...
@@ -55,19 +48,6 @@
             inherit inputs outputs hostname;
             userConfig = users.${username};
             nixosModules = "${self}/modules/nixos";
-          };
-          modules = [ ./hosts/${hostname} ];
-        };
-
-      # Function for nix-darwin system configuration
-      mkDarwinConfiguration =
-        hostname: username:
-        darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = {
-            inherit inputs outputs hostname;
-            userConfig = users.${username};
-            darwinModules = "${self}/modules/darwin";
           };
           modules = [ ./hosts/${hostname} ];
         };

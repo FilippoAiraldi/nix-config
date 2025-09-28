@@ -4,7 +4,7 @@
   ...
 }:
 {
-  config = lib.mkIf (!pkgs.stdenv.isDarwin) {
+  config = {
     # Install easyeffects via home-manager module
     services.easyeffects = {
       enable = true;
