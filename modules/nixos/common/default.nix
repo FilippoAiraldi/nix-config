@@ -102,9 +102,6 @@
   # PATH configuration
   environment.localBinInPath = true;
 
-  # Enable devmon for device management
-  services.devmon.enable = true;
-
   # User configuration
   users.users.${userConfig.name} = {
     description = userConfig.fullName;
