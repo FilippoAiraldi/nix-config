@@ -40,7 +40,6 @@
 
   # Boot settings
   boot = {
-    kernelPackages = pkgs.linuxKernel.packages.linux_6_16;
     consoleLogLevel = 4;
     initrd.verbose = true;
     kernelParams = [ "splash" ];
