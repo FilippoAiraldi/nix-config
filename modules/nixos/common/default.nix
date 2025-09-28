@@ -8,6 +8,8 @@
   ...
 }:
 {
+  system.stateVersion = "25.11";
+
   # Nixpkgs configuration
   nixpkgs = {
     overlays = [
@@ -49,15 +51,8 @@
     ];
     loader.efi.canTouchEfiVariables = true;
     loader.systemd-boot.enable = true;
-    loader.timeout = 0;
+    loader.timeout = 5;
     plymouth.enable = true;
-
-    # v4l (virtual camera) module settings
-    kernelModules = [ "v4l2loopback" ];
-    extraModulePackages = with config.boot.kernelPackages; [ v4l2loopback ];
-    extraModprobeConfig = ''
-      options v4l2loopback exclusive_caps=1 card_label="Virtual Camera"
-    '';
   };
 
   # Networking
@@ -70,26 +65,20 @@
   };
 
   # Timezone
-  time.timeZone = "Europe/Warsaw";
+  time.timeZone = "Europe/Amsterdam";
 
   # Internationalization
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_IE.UTF-8";
-    LC_IDENTIFICATION = "en_IE.UTF-8";
-    LC_MEASUREMENT = "en_IE.UTF-8";
-    LC_MONETARY = "en_IE.UTF-8";
-    LC_NAME = "en_IE.UTF-8";
-    LC_NUMERIC = "en_IE.UTF-8";
-    LC_PAPER = "en_IE.UTF-8";
-    LC_TELEPHONE = "en_IE.UTF-8";
-    LC_TIME = "en_IE.UTF-8";
-  };
-
-  # Enables support for Bluetooth
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
+    LC_ADDRESS = "en_US.UTF-8";
+    LC_IDENTIFICATION = "en_US.UTF-8";
+    LC_MEASUREMENT = "en_US.UTF-8";
+    LC_MONETARY = "en_US.UTF-8";
+    LC_NAME = "en_US.UTF-8";
+    LC_NUMERIC = "en_US.UTF-8";
+    LC_PAPER = "en_US.UTF-8";
+    LC_TELEPHONE = "en_US.UTF-8";
+    LC_TIME = "en_US.UTF-8";
   };
 
   # Input settings
@@ -97,7 +86,7 @@
 
   # xserver settings
   services.xserver = {
-    xkb.layout = "pl";
+    xkb.layout = "us";
     xkb.variant = "";
     excludePackages = with pkgs; [ xterm ];
   };
@@ -113,22 +102,8 @@
   # PATH configuration
   environment.localBinInPath = true;
 
-  # Disable CUPS printing
-  services.printing.enable = false;
-
   # Enable devmon for device management
   services.devmon.enable = true;
-
-  # Enable PipeWire for sound
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
 
   # Enable flatpak service
   services.flatpak.enable = true;
@@ -139,7 +114,6 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "docker"
     ];
     isNormalUser = true;
     shell = pkgs.zsh;
@@ -172,11 +146,6 @@
     mesa
   ];
 
-  # Docker configuration
-  virtualisation.docker.enable = true;
-  virtualisation.docker.rootless.enable = true;
-  virtualisation.docker.rootless.setSocketVariable = true;
-
   # Enable xwayland
   programs.xwayland.enable = true;
 
@@ -195,4 +164,7 @@
 
   # OpenSSH daemon
   services.openssh.enable = true;
+
+  # Tailscale
+  services.tailscale.enable = true;
 }
