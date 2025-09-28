@@ -98,6 +98,8 @@
     curl
     gcc
     xclip
+    make
+    nvim
   ];
 
   # Zsh configuration
