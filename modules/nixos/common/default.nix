@@ -81,24 +81,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Input settings
-  services.libinput.enable = true;
-
-  # xserver settings
-  services.xserver = {
-    xkb.layout = "us";
-    xkb.variant = "";
-    excludePackages = with pkgs; [ xterm ];
-  };
-
-  # Enable Wayland support in Chromium and Electron based applications
-  # Remove decorations for QT apps
-  # Set cursor size
-  environment.sessionVariables = {
-    NIXOS_OZONE_WL = "1";
-    XCURSOR_SIZE = "24";
-  };
-
   # PATH configuration
   environment.localBinInPath = true;
 
@@ -139,9 +121,6 @@
     killall
     mesa
   ];
-
-  # Enable xwayland
-  programs.xwayland.enable = true;
 
   # Zsh configuration
   programs.zsh.enable = true;
