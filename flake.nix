@@ -48,19 +48,12 @@
 
       # Define user configurations
       users = {
-        "alexander.nabokikh" = {
+        fairaldi = {
           avatar = ./files/avatar/face;
-          email = "alexander.nabokikh@olx.pl";
-          fullName = "Alexander Nabokikh";
+          email = "filippoairaldi@gmail.com";
+          fullName = "Filippo Airaldi";
           gitKey = "C5810093";
-          name = "alexander.nabokikh";
-        };
-        nabokikh = {
-          avatar = ./files/avatar/face;
-          email = "alexander.nabokikh@olx.pl";
-          fullName = "Alexander Nabokikh";
-          gitKey = "C5810093";
-          name = "nabokikh";
+          name = "fairaldi";
         };
       };
 
@@ -107,18 +100,11 @@
     in
     {
       nixosConfigurations = {
-        energy = mkNixosConfiguration "energy" "nabokikh";
-      };
-
-      darwinConfigurations = {
-        "PL-OLX-KCGXHGK3PY" = mkDarwinConfiguration "PL-OLX-KCGXHGK3PY" "alexander.nabokikh";
+        "crappy-server" = mkNixosConfiguration "crappy-server" "fairaldi";
       };
 
       homeConfigurations = {
-        "alexander.nabokikh@PL-OLX-KCGXHGK3PY" =
-          mkHomeConfiguration "aarch64-darwin" "alexander.nabokikh"
-            "PL-OLX-KCGXHGK3PY";
-        "nabokikh@energy" = mkHomeConfiguration "x86_64-linux" "nabokikh" "energy";
+        "fairaldi@crappy-server" = mkHomeConfiguration "x86_64-linux" "fairaldi" "crappy-server";
       };
 
       overlays = import ./overlays { inherit inputs; };
