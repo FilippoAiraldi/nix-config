@@ -1,8 +1,8 @@
 # Variables (override these as needed)
 HOSTNAME ?= $(shell hostname)
-FLAKE ?= .#$(HOSTNAME)
-HOME_TARGET ?= $(FLAKE)
-EXPERIMENTAL ?= --extra-experimental-features "nix-command flakes"
+USERNAME ?= $(shell whoami)
+FLAKE ?= .\#$(HOSTNAME)
+HOME_TARGET ?= .\#$(USERNAME)@$(HOSTNAME)
 
 .PHONY: help install-nix nixos-rebuild \
 	home-manager-switch nix-gc flake-update flake-check bootstrap-mac
@@ -28,7 +28,7 @@ nixos-rebuild:
 
 home-manager-switch:
 	@echo "Switching Home Manager configuration..."
-	@home-manager switch --flake $(HOME_TARGET)
+	@nix-shell -p home-manager --run "home-manager switch --flake path:$(HOME_TARGET)"
 	@echo "Home Manager switch complete."
 
 nix-gc:
