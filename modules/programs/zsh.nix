@@ -9,21 +9,15 @@
       users.users.${config.primaryUser}.shell = pkgs.zsh;
     };
 
-  flake.modules.darwin.zsh = {
-    programs.zsh.enableGlobalCompInit = false;
-  };
-
-  flake.modules.homeManager.zsh =
-    { lib, pkgs, ... }:
-    {
-      programs.zsh = {
-        enable = true;
-        defaultKeymap = "viins";
-        initContent = lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
-          open() {
-            xdg-open "$@" </dev/null >/dev/null 2>&1 &!
-          }
-        '';
-      };
+  flake.modules.homeManager.zsh = {
+    programs.zsh = {
+      enable = true;
+      defaultKeymap = "viins";
+      initContent = ''
+        open() {
+          xdg-open "$@" </dev/null >/dev/null 2>&1 &!
+        }
+      '';
     };
+  };
 }
