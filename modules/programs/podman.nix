@@ -7,23 +7,12 @@
   };
 
   flake.modules.homeManager.podman =
-    { lib, pkgs, ... }:
-    let
-      docker = pkgs.writeShellScriptBin "docker" ''
-        exec ${lib.getExe pkgs.podman} "$@"
-      '';
-    in
+    { pkgs, ... }:
     {
-      home.packages =
-        with pkgs;
-        [
-          podman-compose
-          podman-tui
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          docker
-          podman
-        ];
+      home.packages = with pkgs; [
+        podman-compose
+        podman-tui
+      ];
 
       programs.zsh.shellAliases.pt = "podman-tui";
     };
