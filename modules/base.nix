@@ -1,11 +1,6 @@
 { config, ... }:
 let
-  inherit (config.flake.modules)
-    generic
-    nixos
-    darwin
-    homeManager
-    ;
+  inherit (config.flake.modules) generic nixos homeManager;
   commonImports = [
     generic.homeManagerIntegration
     generic.nixSettings
@@ -31,17 +26,6 @@ in
       nixos.podman
       nixos.users
       nixos.zsh
-    ];
-  };
-
-  flake.modules.darwin.base = {
-    imports = commonImports ++ [
-      darwin.brave
-      darwin.fonts
-      darwin.keyboard
-      darwin.mos
-      darwin.systemPreferences
-      darwin.users
     ];
   };
 

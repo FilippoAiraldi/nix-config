@@ -1,10 +1,10 @@
 {
   flake.modules.homeManager.gpg =
-    { pkgs, lib, ... }:
+    { pkgs, ... }:
     {
       programs.gpg.enable = true;
 
-      services.gpg-agent = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      services.gpg-agent = {
         enable = true;
         pinentry.package = pkgs.pinentry-gnome3;
       };

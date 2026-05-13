@@ -11,7 +11,6 @@
       config.profile = {
         email = "alexander.nabokikh@olx.pl";
         fullName = "Alexander Nabokikh";
-
         locale = {
           timezone = "Europe/Warsaw";
           default = "en_US.UTF-8";
