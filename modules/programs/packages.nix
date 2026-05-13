@@ -1,31 +1,23 @@
 {
   flake.modules.homeManager.packages =
-    { lib, pkgs, ... }:
+    { pkgs, ... }:
     {
-      home.packages =
-        with pkgs;
-        [
-          dig
-          fd
-          jq
-          nh
-          nodejs
-          openconnect
-          pipenv
-          python3
-          ripgrep
-          telegram-desktop
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-          anki-bin
-          raycast
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-          anki
-          gcc
-          gnumake
-          unzip
-          wl-clipboard
-        ];
+      home.packages = with pkgs; [
+        dig
+        fd
+        jq
+        nh
+        nodejs
+        openconnect
+        pipenv
+        python3
+        ripgrep
+        telegram-desktop
+        anki
+        gcc
+        gnumake
+        unzip
+        wl-clipboard
+      ];
     };
 }
