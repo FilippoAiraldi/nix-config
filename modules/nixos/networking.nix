@@ -1,6 +1,10 @@
 {
   flake.modules.nixos.networking = {
-    networking.networkmanager.enable = true;
-    systemd.services.NetworkManager-wait-online.enable = false;
+    networking = {
+      wireless.enable = false;
+      useDHCP = false;
+      interfaces.eno1.useDHCP = true; # interface name found via `ip link`
+    };
   };
 }
+
