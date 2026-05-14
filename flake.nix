@@ -20,6 +20,8 @@
     };
 
     import-tree.url = "github:vic/import-tree";
+
+    nixvim.url = "github:nix-community/nixvim";
   };
 
   outputs =
