@@ -1,6 +1,6 @@
 {
   flake.modules.generic.nixSettings = {
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.allowUnfree = false;
 
     nix = {
       channel.enable = false;
@@ -14,3 +14,4 @@
     };
   };
 }
+
