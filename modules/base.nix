@@ -25,8 +25,6 @@ in
 
   flake.modules.nixos.base = {
     imports = commonImports ++ [
-      nixos.audio
-      nixos.bluetooth
       nixos.boot
       nixos.locale
       nixos.networking
