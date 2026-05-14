@@ -9,10 +9,10 @@
       };
 
       config.profile = {
-        email = "alexander.nabokikh@olx.pl";
-        fullName = "Alexander Nabokikh";
+        email = "filippoairaldi@gmail.com";
+        fullName = "Filippo Airaldi";
         locale = {
-          timezone = "Europe/Warsaw";
+          timezone = "Europe/Amsterdam";
           default = "en_US.UTF-8";
           extra = {
             LC_ADDRESS = "en_IE.UTF-8";
