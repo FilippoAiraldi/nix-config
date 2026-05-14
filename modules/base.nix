@@ -24,7 +24,9 @@ in
       nixos.fonts
       nixos.locale
       nixos.networking
-      nixos.podman
+      nixos.nixvim
+      nixos.packages
+      nixos.services
       nixos.users
       nixos.zsh
     ];
