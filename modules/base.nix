@@ -54,7 +54,6 @@ in
       homeManager.bat
       homeManager.brave
       homeManager.btop
-      homeManager.catppuccin
       homeManager.eza
       homeManager.fastfetch
       homeManager.fonts
