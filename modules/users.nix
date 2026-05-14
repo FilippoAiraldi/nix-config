@@ -1,9 +1,6 @@
 {
   flake.modules.nixos.users =
-    {
-      config,
-      ...
-    }:
+    { config, ... }:
     {
       users.users.${config.primaryUser} = {
         description = config.profile.fullName;
