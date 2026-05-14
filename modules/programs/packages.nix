@@ -1,10 +1,6 @@
 {
   flake.modules.homeManager.packages =
-    {
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, pkgs, ... }:
     {
       home.packages =
         with pkgs;
