@@ -26,7 +26,6 @@ in
   flake.modules.nixos.base = {
     imports = commonImports ++ [
       nixos.boot
-      nixos.fonts
       nixos.locale
       nixos.networking
       nixos.podman
@@ -38,7 +37,6 @@ in
   flake.modules.darwin.base = {
     imports = commonImports ++ [
       darwin.brave
-      darwin.fonts
       darwin.keyboard
       darwin.mos
       darwin.systemPreferences
@@ -50,7 +48,6 @@ in
   flake.modules.homeManager.base = {
     imports = [
       generic.profile
-      homeManager.alacritty
       homeManager.atuin
       homeManager.aws
       homeManager.brave
