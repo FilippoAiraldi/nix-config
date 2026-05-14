@@ -4,14 +4,8 @@
     {
       users.users.${config.primaryUser} = {
         description = config.profile.fullName;
-        extraGroups = [
-          "networkmanager"
-          "video"
-          "wheel"
-        ];
+        extraGroups = [ "wheel" ];
         isNormalUser = true;
       };
-
-      security.sudo.wheelNeedsPassword = false;
     };
 }
