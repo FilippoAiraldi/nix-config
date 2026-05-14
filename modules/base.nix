@@ -48,7 +48,6 @@ in
   flake.modules.homeManager.base = {
     imports = [
       generic.profile
-      homeManager.alacritty
       homeManager.atuin
       homeManager.aws
       homeManager.bat
@@ -56,7 +55,6 @@ in
       homeManager.btop
       homeManager.eza
       homeManager.fastfetch
-      homeManager.fonts
       homeManager.fzf
       homeManager.git
       homeManager.go

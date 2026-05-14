@@ -1,10 +1,6 @@
 {
   flake.modules.homeManager.neovim =
-    {
-      config,
-      pkgs,
-      ...
-    }:
+    { pkgs, ... }:
     {
       programs.neovim = {
         enable = true;
@@ -38,13 +34,6 @@
           vscode-langservers-extracted
           yaml-language-server
         ];
-      };
-
-      xdg.configFile = {
-        "nvim" = {
-          source = ./lazyvim;
-          recursive = true;
-        };
       };
     };
 }
