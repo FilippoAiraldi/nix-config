@@ -1,10 +1,6 @@
 {
   flake.modules.generic.profile =
-    {
-      lib,
-      pkgs,
-      ...
-    }:
+    { lib, ... }:
     {
       options.profile = lib.mkOption {
         readOnly = true;
@@ -15,30 +11,6 @@
       config.profile = {
         email = "alexander.nabokikh@olx.pl";
         fullName = "Alexander Nabokikh";
-        gitKey = "C5810093";
-        avatar = ./avatar.jpg;
-        wallpaper = ./wallpaper.jpg;
-
-        appearance = {
-          fonts = {
-            ui = {
-              family = "Inter";
-              size = 11;
-              package = pkgs.inter;
-            };
-
-            monospace = {
-              family = "MesloLGS Nerd Font Mono";
-              package = pkgs.nerd-fonts.meslo-lg;
-              size = 11;
-            };
-
-            terminalSize = {
-              linux = 12;
-              darwin = 15;
-            };
-          };
-        };
 
         locale = {
           timezone = "Europe/Warsaw";
