@@ -20,24 +20,6 @@
         wallpaper = ./wallpaper.jpg;
 
         appearance = {
-          catppuccin = {
-            flavor = "mocha";
-            accent = "lavender";
-          };
-
-          iconTheme = {
-            name = "Colloid-Catppuccin-Dark";
-            package = pkgs.colloid-icon-theme.override {
-              schemeVariants = [ "catppuccin" ];
-            };
-          };
-
-          cursorTheme = {
-            name = "Adwaita";
-            package = pkgs.adwaita-icon-theme;
-            size = 24;
-          };
-
           fonts = {
             ui = {
               family = "Inter";
