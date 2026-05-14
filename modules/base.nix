@@ -71,7 +71,6 @@ in
       homeManager.opentofu
       homeManager.packages
       homeManager.podman
-      homeManager.scripts
       homeManager.starship
       homeManager.tmux
       homeManager.xdg
