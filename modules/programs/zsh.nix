@@ -7,14 +7,8 @@
     };
 
   flake.modules.homeManager.zsh =
+    { lib, pkgs, ... }:
     {
-      lib,
-      pkgs,
-      ...
-    }:
-    {
-      catppuccin.zsh-syntax-highlighting.enable = false;
-
       programs.zsh = {
         enable = true;
         defaultKeymap = "viins";

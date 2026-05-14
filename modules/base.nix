@@ -53,7 +53,6 @@ in
       homeManager.aws
       homeManager.brave
       homeManager.btop
-      homeManager.catppuccin
       homeManager.eza
       homeManager.fastfetch
       homeManager.fonts
