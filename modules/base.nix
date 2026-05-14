@@ -50,7 +50,6 @@ in
   flake.modules.homeManager.base = {
     imports = [
       generic.profile
-      homeManager.alacritty
       homeManager.atuin
       homeManager.aws
       homeManager.brave

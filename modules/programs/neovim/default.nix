@@ -34,12 +34,5 @@
           yaml-language-server
         ];
       };
-
-      xdg.configFile = {
-        "nvim" = {
-          source = ./lazyvim;
-          recursive = true;
-        };
-      };
     };
 }
