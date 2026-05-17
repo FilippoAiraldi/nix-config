@@ -22,6 +22,7 @@ in
     imports = commonImports ++ [
       nixos.bash
       nixos.boot
+      nixos.dns
       nixos.locale
       nixos.network-filesystem
       nixos.networking
