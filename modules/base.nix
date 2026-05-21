@@ -51,6 +51,7 @@ in
       homeManager.eza
       homeManager.fzf
       homeManager.git
+      homeManager.nixvim
       homeManager.packages
       homeManager.zellij
     ];
