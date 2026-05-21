@@ -22,6 +22,11 @@
     import-tree.url = "github:vic/import-tree";
 
     nixvim.url = "github:nix-community/nixvim";
+
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
