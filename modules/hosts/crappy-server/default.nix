@@ -4,7 +4,7 @@
     imports = [
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
-      config.flake.modules.nixos.base
+      config.flake.modules.nixos.server
     ];
 
     primaryUser = "fairaldi";
