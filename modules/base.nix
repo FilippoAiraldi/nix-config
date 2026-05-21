@@ -18,7 +18,7 @@ in
     };
   };
 
-  flake.modules.nixos.base = {
+  flake.modules.nixos.server = {
     imports = commonImports ++ [
       nixos.bash
       nixos.boot
