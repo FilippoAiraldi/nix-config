@@ -50,6 +50,7 @@ in
       homeManager.bash
       homeManager.fzf
       homeManager.git
+      homeManager.nixvim
       homeManager.packages
       homeManager.zellij
     ];
