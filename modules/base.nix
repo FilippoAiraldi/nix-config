@@ -34,6 +34,17 @@ in
     ];
   };
 
+  flake.modules.nixos.wsl = {
+    imports = commonImports ++ [
+      nixos.bash
+      nixos.locale
+      nixos.nixvim
+      nixos.packages
+      nixos.users
+    ];
+    home-manager.sharedModules = [ homeManager.base ];
+  };
+
   flake.modules.homeManager.base = {
     imports = [
       generic.profile
