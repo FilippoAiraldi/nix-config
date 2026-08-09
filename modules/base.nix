@@ -42,7 +42,6 @@ in
       nixos.packages
       nixos.users
     ];
-    home-manager.sharedModules = [ homeManager.base ];
   };
 
   flake.modules.homeManager.base = {

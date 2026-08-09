@@ -46,13 +46,24 @@ let
     builder = inputs.nixpkgs.lib.nixosSystem;
     extraModules = [ inputs.home-manager.nixosModules.home-manager ];
   } config.configurations.nixos;
+
+  wslConfigurations = mkSystems {
+    builder = inputs.nixpkgs.lib.nixosSystem;
+    extraModules = [
+      inputs.nixos-wsl.nixosModules.default
+      inputs.home-manager.nixosModules.home-manager
+      { wsl.enable = lib.mkDefault true; }
+    ];
+  } config.configurations.wsl;
 in
 {
   options.configurations = {
     nixos = mkConfigurationsOption "NixOS";
+    wsl = mkConfigurationsOption "NixOS-WSL";
   };
 
   config.flake = {
-    checks = lib.mkMerge (mkChecks "nixos" nixosConfigurations);
+    nixosConfigurations = lib.attrsets.unionOfDisjoint nixosConfigurations wslConfigurations;
+    checks = lib.mkMerge (mkChecks "nixos" nixosConfigurations ++ mkChecks "wsl" wslConfigurations);
   };
 }
