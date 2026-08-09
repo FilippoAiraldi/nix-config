@@ -29,4 +29,3 @@
     signcolumn = "yes";
   };
 }
-
