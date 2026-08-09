@@ -1,5 +1,5 @@
 # Variables (override via environment or `just --set`)
-hostname := `hostname`
+hostname := `hostname -s`
 flake    := ".#" + hostname
 
 # List available recipes (running `just` runs this recipe, since it is first)
@@ -30,3 +30,7 @@ flake-check:
     @echo "Checking flake..."
     nix flake check
     @echo "Flake check complete."
+
+# Format the repository
+fmt:
+    nix fmt
