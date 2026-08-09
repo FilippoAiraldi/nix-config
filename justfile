@@ -30,3 +30,7 @@ flake-check:
     @echo "Checking flake..."
     nix flake check
     @echo "Flake check complete."
+
+# Format the repository
+fmt:
+    nix fmt
