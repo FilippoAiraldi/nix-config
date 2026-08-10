@@ -1,41 +1,56 @@
-# Private home network: unbound (DNS forwarder + blocklist)
-# https://wiki.nixos.org/wiki/Unbound
-# https://unbound.docs.nlnetlabs.nl/en/latest/manpages/unbound.conf.html
+# Private home network: Pi Hole (DNS resolver + blocklist)
+# https://wiki.nixos.org/wiki/Pi-Hole
+# https://docs.pi-hole.net/ftldns/configfile
 {
   flake.modules.nixos.dns = {
-    services.unbound = {
+    services.pihole-ftl = {
       enable = true;
       settings = {
-        server = {
-          interface = [
-            "127.0.0.1"
-            "192.168.68.100"
+        dns = {
+          upstreams = [
+            "9.9.9.9"
+            "149.112.112.112"
+            "1.1.1.1"
+            "1.0.0.1"
           ];
-          access-control = [
-            "127.0.0.0/8 allow"
-            "192.168.68.0/24 allow"
+          hosts = [
+            "192.168.1.1 modem.home"
+            "192.168.68.100 crappy-server.home"
           ];
         };
-        server.module-config = "'respip validator iterator'";
-        rpz = [
-          {
-            name = "hageziPro";
-            url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/rpz/pro.txt";
-          }
-        ];
-        forward-zone = [
-          {
-            name = ".";
-            forward-tls-upstream = true;
-            forward-addr = [
-              "9.9.9.9@853#dns.quad9.net"
-              "149.112.112.112@853#dns.quad9.net"
-              "1.1.1.1@853#cloudflare-dns.com"
-              "1.0.0.1@853#cloudflare-dns.com"
-            ];
-          }
-        ];
       };
+
+      lists = [
+        {
+          url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt";
+          type = "block";
+          enabled = true;
+          description = "hagezi ultimate blocklist";
+        }
+        {
+          url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/popupads.txt";
+          type = "block";
+          enabled = true;
+          description = "hagezi popupads blocklist";
+        }
+        {
+          url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt";
+          type = "block";
+          enabled = true;
+          description = "hagezi tif blocklist";
+        }
+        {
+          url = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt";
+          type = "block";
+          enabled = true;
+          description = "hagezi fake blocklist";
+        }
+     ];
+    };
+
+    services.pihole-web = {
+      enable = true;
+      ports = [ "443s" ];
     };
 
     networking = {
@@ -44,7 +59,11 @@
         "9.9.9.9"
       ];
       firewall.allowedUDPPorts = [ 53 ];
-      firewall.allowedTCPPorts = [ 53 ];
+      firewall.allowedTCPPorts = [
+        53
+        443
+      ];
     };
   };
 }
+
