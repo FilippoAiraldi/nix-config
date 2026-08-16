@@ -23,6 +23,7 @@ in
       nixos.bash
       nixos.boot
       nixos.locale
+      nixos."network-filesystem"
       nixos.networking
       nixos.nixvim
       nixos.packages
