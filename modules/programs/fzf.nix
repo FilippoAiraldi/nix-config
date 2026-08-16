@@ -1,21 +1,24 @@
 {
   flake.modules.homeManager.fzf = {
-    programs.fzf = {
-      enable = true;
+    programs = {
+      fzf = {
+        enable = true;
+        enableBashIntegration = true;
 
-      historyWidget.command = "";
+        defaultCommand = "fd --type f --hidden --follow --exclude .git";
+        defaultOptions = [
+          "--bind '?:toggle-preview'"
+          "--bind 'ctrl-o:execute(nvim -- {+})'"
+          "--height=40%"
+          "--info=inline"
+          "--multi"
+          "--preview '( [[ -f {} ]] && (bat --line-range :200 --color=always --style=numbers,changes {} || head -200 {}) || [[ -d {} ]] && (eza -la --color=always --icons=always --group-directories-first {}) || ls -la --color=always {} || echo {} ) 2> /dev/null | head -200'"
+        ];
+      };
 
-      defaultOptions = [
-        "--bind '?:toggle-preview'"
-        "--bind 'ctrl-e:execute(nvim -- {+})'"
-        "--bind 'ctrl-y:execute-silent(printf \"%s\\n\" {+} | wl-copy)'"
-        "--height=40%"
-        "--info=inline"
-        "--layout=reverse"
-        "--marker='✓'"
-        "--pointer='▶'"
-        "--prompt='~ '"
-      ];
+      bat.enable = true;
+      eza.enable = true;
+      fd.enable = true;
     };
   };
 }
