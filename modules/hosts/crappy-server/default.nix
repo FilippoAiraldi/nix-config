@@ -8,6 +8,7 @@
     ];
 
     primaryUser = "fairaldi";
+    sambaDir = "/mnt/shares";
 
     system.stateVersion = "26.05";
 
