@@ -20,6 +20,7 @@ in
 
   flake.modules.nixos.base = {
     imports = commonImports ++ [
+      nixos.bash
       nixos.boot
       nixos.locale
       nixos.networking
@@ -27,33 +28,18 @@ in
       nixos.packages
       nixos.services
       nixos.users
-      nixos.zsh
     ];
   };
 
   flake.modules.homeManager.base = {
     imports = [
       generic.profile
-      homeManager.atuin
-      homeManager.aws
-      homeManager.brave
-      homeManager.btop
+      homeManager.bash
       homeManager.eza
-      homeManager.fastfetch
       homeManager.fzf
       homeManager.git
-      homeManager.go
-      homeManager.gpg
-      homeManager.k8s
-      homeManager.neovim
-      homeManager.opencode
-      homeManager.opentofu
       homeManager.packages
-      homeManager.podman
-      homeManager.starship
-      homeManager.tmux
-      homeManager.xdg
-      homeManager.zsh
+      homeManager.zellij
     ];
   };
 }

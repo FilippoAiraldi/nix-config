@@ -10,7 +10,11 @@
               inherit (config.profile) email;
               name = config.profile.fullName;
             };
+            safe.directory = "/etc/nixos/home";
             pull.rebase = true;
+            alias = {
+              lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+            };
           };
         };
 
@@ -23,20 +27,7 @@
             navigate = true;
           };
         };
-
-        lazygit = {
-          enable = true;
-
-          settings = {
-            gui.showNumstatInFilesView = true;
-
-            git.diffRenderers = [
-              {
-                command = "delta --paging=never";
-              }
-            ];
-          };
-        };
       };
     };
 }
+

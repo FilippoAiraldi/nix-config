@@ -9,11 +9,11 @@
       # automatic mounting (disabled for power reduction)
       devmon.enable = false;
 
+      # enable ssh and tailscale
       openssh = {
         enable = true;
         settings.X11Forwarding = true;
       };
-
       tailscale.enable = true;
 
       # ignore lid closing
