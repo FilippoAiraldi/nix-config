@@ -10,6 +10,7 @@
               inherit (config.profile) email;
               name = config.profile.fullName;
             };
+            safe.directory = "/etc/nixos/home";
             pull.rebase = true;
           };
         };
@@ -23,20 +24,7 @@
             navigate = true;
           };
         };
-
-        lazygit = {
-          enable = true;
-
-          settings = {
-            gui.showNumstatInFilesView = true;
-
-            git.diffRenderers = [
-              {
-                command = "delta --paging=never";
-              }
-            ];
-          };
-        };
       };
     };
 }
+

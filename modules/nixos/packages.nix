@@ -6,7 +6,6 @@
 
       # NOTE: these packages are available for all users on the system
       environment.systemPackages = with pkgs; [
-        byobu
         curl
         dig
         dnsutils
@@ -16,9 +15,9 @@
         just
         nixfmt
         ripgrep
-        tmux
         wget
         xclip
+        zellij
       ];
 
       # make neovim the Man's pager (nixvim is installed for all users; see modules/base.nix)
@@ -26,7 +25,11 @@
 
       programs.git = {
         enable = true;
-        config.alias.lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+        config = {
+          alias.lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+          credential.helper = "cache --timeout=10800";
+          safe.directory = "/etc/nixos/home";
+        };
       };
     };
 }
