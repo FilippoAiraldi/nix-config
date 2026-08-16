@@ -8,8 +8,6 @@
     ];
 
     primaryUser = "fairaldi";
-    sambaDir = "/mnt/shares";
-
     system.stateVersion = "26.05";
 
     # # support for nvidia gpu. since it's old, also the kernel must be quite old (https://nixos.wiki/wiki/Nvidia)
