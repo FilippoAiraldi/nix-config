@@ -28,6 +28,7 @@ in
       nixos.networking
       nixos.nixvim
       nixos.packages
+      nixos."power-cycle"
       nixos.services
       nixos.users
     ];
