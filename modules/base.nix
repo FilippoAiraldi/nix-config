@@ -24,6 +24,7 @@ in
       nixos.boot
       nixos.dns
       nixos.locale
+      nixos.monitoring
       nixos.network-filesystem
       nixos.networking
       nixos.nixvim
