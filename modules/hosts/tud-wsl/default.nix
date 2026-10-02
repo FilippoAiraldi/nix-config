@@ -13,6 +13,7 @@
       system.stateVersion = "25.11";
 
       # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
+      hostName = "tud-wsl";
       primaryUser = primaryUser;
       wsl.defaultUser = primaryUser;
       users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`

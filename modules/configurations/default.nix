@@ -24,10 +24,9 @@ let
   mkSystems =
     { builder, extraModules }:
     lib.mapAttrs (
-      name: cfg:
+      _: cfg:
       builder {
         modules = extraModules ++ [
-          { networking.hostName = lib.mkDefault name; }
           cfg.module
         ];
       }

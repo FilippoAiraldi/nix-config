@@ -7,6 +7,7 @@
       config.flake.modules.nixos.server
     ];
 
+    hostName = "crappy-server";
     primaryUser = "fairaldi";
 
     # Interface names found via `ip link`.
