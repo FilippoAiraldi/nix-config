@@ -1,20 +1,20 @@
 { config, ... }:
+let
+  hostName = "tud-wsl";
+  primaryUser = "fairaldi";
+in
 {
-  configurations.wsl.tud-wsl.module =
-    let
-      primaryUser = "fairaldi";
-    in
-    {
+  configurations.wsl.${hostName}.module = {
 
-      imports = [
-        config.flake.modules.nixos.wsl
-      ];
-      nixpkgs.hostPlatform = "x86_64-linux";
-      system.stateVersion = "25.11";
+    imports = [
+      config.flake.modules.nixos.wsl
+    ];
+    nixpkgs.hostPlatform = "x86_64-linux";
+    system.stateVersion = "25.11";
 
-      # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
-      primaryUser = primaryUser;
-      wsl.defaultUser = primaryUser;
-      users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`
-    };
+    # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
+    inherit hostName primaryUser;
+    wsl.defaultUser = primaryUser;
+    users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`
+  };
 }

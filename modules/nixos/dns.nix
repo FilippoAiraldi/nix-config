@@ -58,7 +58,7 @@
                 upstreams = [ "127.0.0.1#${toString config.unboundPort}" ];
                 hosts = [
                   "192.168.1.1 modem.home"
-                  "192.168.68.100 crappy-server.home"
+                  "192.168.68.100 ${config.hostName}.home"
                 ];
               };
             };
