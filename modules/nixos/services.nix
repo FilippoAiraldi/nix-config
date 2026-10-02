@@ -9,12 +9,11 @@
       # automatic mounting (disabled for power reduction)
       devmon.enable = false;
 
-      # enable ssh and tailscale
+      # enable ssh
       openssh = {
         enable = true;
         settings.X11Forwarding = true;
       };
-      tailscale.enable = true;
 
       # ignore lid closing
       logind.settings.Login = {
@@ -43,5 +42,13 @@
         };
       };
     };
+
+    # enable tailscale (with home subnet advertising)
+    services.tailscale = {
+      enable = true;
+      useRoutingFeatures = "server";
+      extraUpFlags = [ "--advertise-routes=192.168.68.100/32" ]; # local IP address of the server
+    };
+    networking.firewall.trustedInterfaces = [ "tailscale0" ];
   };
 }
