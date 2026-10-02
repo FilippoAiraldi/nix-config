@@ -156,10 +156,12 @@
         };
 
         # open port for Gatus and Grafana
-        networking.firewall.allowedTCPPorts = [
-          config.gatusPort
-          config.grafanaPort
-        ];
+        networking.firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
+          allowedTCPPorts = [
+            config.gatusPort
+            config.grafanaPort
+          ];
+        });
 
         # copy Grafana's secret key
         systemd.services.grafana.serviceConfig.LoadCredential = [

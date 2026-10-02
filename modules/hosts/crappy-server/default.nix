@@ -8,6 +8,14 @@
     ];
 
     primaryUser = "fairaldi";
+
+    # Interface names found via `ip link`.
+    # Wifi interface was soft-blocked; had to manually unblock it once via `sudo rfkill unblock wifi`.
+    networkInterfaces = [
+      "eno1"
+      "wlo1"
+    ];
+
     system.stateVersion = "26.05";
 
     # # support for nvidia gpu. since it's old, also the kernel must be quite old (https://nixos.wiki/wiki/Nvidia)
