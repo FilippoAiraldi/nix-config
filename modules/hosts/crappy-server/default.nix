@@ -1,13 +1,16 @@
 { inputs, config, ... }:
+let
+  hostName = "crappy-server";
+in
 {
-  configurations.nixos.crappy-server.module = {
+  configurations.nixos.${hostName}.module = {
     imports = [
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
       config.flake.modules.nixos.server
     ];
 
-    hostName = "crappy-server";
+    inherit hostName;
     primaryUser = "fairaldi";
 
     # Interface names found via `ip link`.

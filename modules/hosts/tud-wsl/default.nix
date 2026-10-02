@@ -1,6 +1,9 @@
 { config, ... }:
+let
+  hostName = "tud-wsl";
+in
 {
-  configurations.wsl.tud-wsl.module =
+  configurations.wsl.${hostName}.module =
     let
       primaryUser = "fairaldi";
     in
@@ -13,7 +16,7 @@
       system.stateVersion = "25.11";
 
       # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
-      hostName = "tud-wsl";
+      inherit hostName;
       primaryUser = primaryUser;
       wsl.defaultUser = primaryUser;
       users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`
