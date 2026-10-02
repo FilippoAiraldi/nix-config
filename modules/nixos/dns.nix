@@ -103,11 +103,13 @@
             "127.0.0.1"
             "9.9.9.9" # fallback in case localhost fails
           ];
-          firewall.allowedUDPPorts = [ 53 ];
-          firewall.allowedTCPPorts = [
-            53
-            config.piholeWebPort
-          ];
+          firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
+            allowedUDPPorts = [ 53 ];
+            allowedTCPPorts = [
+              53
+              config.piholeWebPort
+            ];
+          });
         };
       };
     };
