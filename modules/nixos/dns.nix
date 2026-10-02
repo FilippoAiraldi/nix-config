@@ -60,6 +60,10 @@
                   "192.168.1.1 modem.home"
                   "192.168.68.100 ${config.hostName}.home"
                 ];
+                # opens Pi-Hole for any DNS request; this is in general bad but allows for automatic
+                # routing of Tailscale DNS (e.g., so that searching for http://crappy-server.home
+                # when connected to Tailscale works)
+                listeningMode = "ALL";
               };
             };
             lists = [
