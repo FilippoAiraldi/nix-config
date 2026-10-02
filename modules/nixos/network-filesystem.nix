@@ -95,7 +95,9 @@
         };
 
         # open port for syncthing GUI
-        networking.firewall.allowedTCPPorts = [ config.syncthingPort ];
+        networking.firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
+          allowedTCPPorts = [ config.syncthingPort ];
+        });
       };
     };
 }
