@@ -23,15 +23,7 @@ let
 
   mkSystems =
     { builder, extraModules }:
-    lib.mapAttrs (
-      name: cfg:
-      builder {
-        modules = extraModules ++ [
-          { networking.hostName = lib.mkDefault name; }
-          cfg.module
-        ];
-      }
-    );
+    lib.mapAttrs (_: cfg: builder { modules = extraModules ++ [ cfg.module ]; });
 
   mkChecks =
     prefix:

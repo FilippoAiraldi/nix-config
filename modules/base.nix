@@ -3,6 +3,7 @@ let
   inherit (config.flake.modules) generic nixos homeManager;
   commonImports = [
     generic.homeManagerIntegration
+    generic.hostName
     generic.nixSettings
     generic.primaryUser
     generic.primaryUserHome
