@@ -25,6 +25,7 @@ in
       nixos.boot
       nixos.dns
       nixos.locale
+      nixos.metasearch
       nixos.monitoring
       nixos."network-filesystem"
       nixos.networking
