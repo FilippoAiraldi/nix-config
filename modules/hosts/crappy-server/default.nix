@@ -11,6 +11,7 @@ in
     ];
 
     inherit hostName;
+    localIPAddr = "192.168.68.100";
     primaryUser = "fairaldi";
 
     # Interface names found via `ip link`.
