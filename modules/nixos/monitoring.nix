@@ -51,7 +51,7 @@
                 }
                 {
                   name = "Pi-hole web (LAN address)";
-                  url = "https://192.168.68.100:${toString config.piholeWebPort}/";
+                  url = "https://${config.localIPaddr}:${toString config.piholeWebPort}/";
                   interval = "10m";
                   client.insecure = true;
                   conditions = [
