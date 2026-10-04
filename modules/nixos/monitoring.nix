@@ -1,8 +1,30 @@
 {
   flake.modules.nixos.monitoring =
     { config, lib, ... }:
+    let
+      domain = "${config.hostName}.home";
+      every = "5m";
+
+      # localhost check of a service
+      local = name: port: {
+        name = "${name} (local)";
+        group = "services";
+        url = "http://127.0.0.1:${toString port}/";
+        interval = every;
+        conditions = [ "[STATUS] < 400" ];
+      };
+
+      # end-to-end check through Caddy (DNS + TLS + proxy)
+      viaCaddy = name: {
+        name = "${name} (Caddy)";
+        group = "caddy";
+        url = "https://${name}.${domain}/";
+        interval = every;
+        client.insecure = true; # Caddy's internal CA is not trusted by the Gatus process
+        conditions = [ "[STATUS] < 400" ];
+      };
+    in
     {
-      # module options
       options = {
         gatusPort = lib.mkOption {
           type = lib.types.int;
@@ -33,63 +55,83 @@
             enable = true;
             settings = {
               web = {
-                address = "0.0.0.0";
+                address = "127.0.0.1";
                 port = config.gatusPort;
               };
               metrics = true;
 
-              endpoints = [
-                {
-                  name = "Pi-hole web";
-                  url = "https://localhost:${toString config.piholeWebPort}/";
-                  interval = "10m";
-                  client.insecure = true;
-                  conditions = [
-                    "[STATUS] == 200"
-                    "[BODY] == pat(*Pi-hole*)"
-                  ];
-                }
-                {
-                  name = "Pi-hole web (LAN address)";
-                  url = "https://${config.localIPAddr}:${toString config.piholeWebPort}/";
-                  interval = "10m";
-                  client.insecure = true;
-                  conditions = [
-                    "[STATUS] == 200"
-                    "[BODY] == pat(*Pi-hole*)"
-                  ];
-                }
-                {
-                  name = "DNS via Pi-hole";
-                  url = "127.0.0.1";
-                  interval = "10m";
-                  dns = {
-                    query-name = "nixos.org";
-                    query-type = "A";
-                  };
-                  conditions = [ "[DNS_RCODE] == NOERROR" ];
-                }
-                {
-                  name = "DNS via Unbound";
-                  url = "127.0.0.1:${toString config.unboundPort}";
-                  interval = "10m";
-                  dns = {
-                    query-name = "nixos.org";
-                    query-type = "A";
-                  };
-                  conditions = [ "[DNS_RCODE] == NOERROR" ];
-                }
-                {
-                  name = "Pi-hole blocking";
-                  url = "127.0.0.1";
-                  interval = "10m";
-                  dns = {
-                    query-name = "doubleclick.net";
-                    query-type = "A";
-                  };
-                  conditions = [ "[BODY] == 0.0.0.0" ];
-                }
-              ];
+              endpoints =
+                # Caddy checks on itself
+                map (port: {
+                  name = "Caddy port ${toString port}";
+                  group = "caddy";
+                  url = "tcp://127.0.0.1:${toString port}";
+                  interval = every;
+                  conditions = [ "[CONNECTED] == true" ];
+                }) config.caddyPorts
+                ++ [
+                  # DNS checks
+                  {
+                    name = "DNS via Pi-hole";
+                    group = "dns";
+                    url = "127.0.0.1";
+                    interval = every;
+                    dns = {
+                      query-name = "nixos.org";
+                      query-type = "A";
+                    };
+                    conditions = [ "[DNS_RCODE] == NOERROR" ];
+                  }
+                  {
+                    name = "DNS via Unbound";
+                    group = "dns";
+                    url = "127.0.0.1:${toString config.unboundPort}";
+                    interval = every;
+                    dns = {
+                      query-name = "nixos.org";
+                      query-type = "A";
+                    };
+                    conditions = [ "[DNS_RCODE] == NOERROR" ];
+                  }
+                  {
+                    name = "Pi-hole blocking";
+                    group = "dns";
+                    url = "127.0.0.1";
+                    interval = every;
+                    dns = {
+                      query-name = "doubleclick.net";
+                      query-type = "A";
+                    };
+                    conditions = [ "[BODY] == 0.0.0.0" ];
+                  }
+                  {
+                    name = "Wildcard DNS for Caddy";
+                    group = "dns";
+                    url = "127.0.0.1";
+                    interval = every;
+                    dns = {
+                      query-name = "gatus.${domain}";
+                      query-type = "A";
+                    };
+                    conditions = [
+                      "[DNS_RCODE] == NOERROR"
+                      "[BODY] == ${config.localIPAddr}"
+                    ];
+                  }
+
+                  # direct localhost checks
+                  (local "Grafana" config.grafanaPort)
+                  (local "Pi-Hole Web" config.piholeWebPort)
+                  (local "SearXNG" config.searxPort)
+                  (local "Syncthing" config.syncthingPort)
+
+                  # end-to-end through Caddy
+                  (viaCaddy "grafana")
+                  (viaCaddy "pihole")
+                  (viaCaddy "searxng")
+                  (viaCaddy "syncthing")
+                  (viaCaddy "gatus")
+                ];
             };
           };
 
@@ -134,7 +176,7 @@
             enable = true;
             settings = {
               server = {
-                http_addr = "0.0.0.0";
+                http_addr = "127.0.0.1";
                 http_port = config.grafanaPort;
               };
               security.secret_key = "$__file{/run/credentials/grafana.service/secret_key}";
@@ -154,14 +196,6 @@
             };
           };
         };
-
-        # open port for Gatus and Grafana
-        networking.firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
-          allowedTCPPorts = [
-            config.gatusPort
-            config.grafanaPort
-          ];
-        });
 
         # copy Grafana's secret key
         systemd.services.grafana.serviceConfig.LoadCredential = [

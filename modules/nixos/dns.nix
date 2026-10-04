@@ -65,6 +65,11 @@
                 # when connected to Tailscale works)
                 listeningMode = "ALL";
               };
+
+              # wildcard subdomain matching for Caddy reverse-proxy
+              misc.dnsmasq_lines = [
+                "address=/crappy-server.home/${config.localIPAddr}"
+              ];
             };
             lists = [
               {
@@ -109,10 +114,7 @@
           ];
           firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
             allowedUDPPorts = [ 53 ];
-            allowedTCPPorts = [
-              53
-              config.piholeWebPort
-            ];
+            allowedTCPPorts = [ 53 ];
           });
         };
       };

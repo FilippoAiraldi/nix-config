@@ -76,11 +76,14 @@
             user = config.primaryUser;
             group = "users";
 
-            guiAddress = "0.0.0.0:${toString config.syncthingPort}";
+            guiAddress = "127.0.0.1:${toString config.syncthingPort}";
             guiPasswordFile = "/secrets/syncthing/gui-passwd"; # manually created
 
             settings = {
-              gui.user = "fairaldi";
+              gui = {
+                user = "fairaldi";
+                insecureSkipHostcheck = true; # required due to Caddy proxy
+              };
               devices = {
                 "C4SV5D3" = {
                   id = "M4PBHWJ-A7XXPSY-BTBYGBA-3BZECO5-7VDT3F4-PXLKTNC-U5JJOQT-XEUF3A4";
@@ -93,11 +96,6 @@
             };
           };
         };
-
-        # open port for syncthing GUI
-        networking.firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
-          allowedTCPPorts = [ config.syncthingPort ];
-        });
       };
     };
 }
