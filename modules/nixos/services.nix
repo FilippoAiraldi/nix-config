@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.services = {
+  flake.modules.nixos.services = { config, ... }: {
     systemd.services = {
       NetworkManager-wait-online.enable = false;
       plymouth-quit-wait.enable = false;
@@ -47,7 +47,7 @@
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "server";
-      extraUpFlags = [ "--advertise-routes=192.168.68.100/32" ]; # local IP address of the server
+      extraUpFlags = [ "--advertise-routes=${config.localIPaddr}/32" ]; # local IP address of the server
     };
     networking.firewall.trustedInterfaces = [ "tailscale0" ];
   };

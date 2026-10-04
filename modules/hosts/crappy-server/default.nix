@@ -8,9 +8,11 @@ in
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
       config.flake.modules.nixos.server
+      config.flake.modules.generic.localIPaddr
     ];
 
     inherit hostName;
+    localIPaddr = "192.168.68.100";
     primaryUser = "fairaldi";
 
     # Interface names found via `ip link`.
