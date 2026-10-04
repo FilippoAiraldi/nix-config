@@ -32,6 +32,7 @@ in
       nixos.networking
       nixos.nixvim
       nixos.packages
+      nixos.proxy
       nixos."power-cycle"
       nixos.services
       nixos.users
