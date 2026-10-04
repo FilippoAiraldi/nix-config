@@ -21,6 +21,7 @@ in
 
   flake.modules.nixos.server = {
     imports = commonImports ++ [
+      generic.localIPaddr
       nixos.bash
       nixos.boot
       nixos.dns

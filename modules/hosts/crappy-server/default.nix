@@ -8,7 +8,6 @@ in
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
       config.flake.modules.nixos.server
-      config.flake.modules.generic.localIPaddr
     ];
 
     inherit hostName;

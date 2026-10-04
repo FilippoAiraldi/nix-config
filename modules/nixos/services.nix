@@ -47,7 +47,7 @@
     services.tailscale = {
       enable = true;
       useRoutingFeatures = "server";
-      extraUpFlags = [ "--advertise-routes=${config.localIPaddr}/32" ]; # local IP address of the server
+      extraUpFlags = [ "--advertise-routes=${config.localIPaddr}/32" ];
     };
     networking.firewall.trustedInterfaces = [ "tailscale0" ];
   };
