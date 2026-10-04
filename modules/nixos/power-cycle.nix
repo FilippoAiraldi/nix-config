@@ -2,27 +2,55 @@
 {
   flake.modules.nixos.power-cycle =
     { pkgs, ... }:
+    let
+      powerOnTime = "09:00:00";
+      powerOffTime = "21:00:00";
+    in
     {
-      systemd.timers.auto-poweroff = {
-        description = "Power off at 21:00 daily";
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "*-*-* 21:00:00";
-          Persistent = false;
-          AccuracySec = "1min";
-        };
-      };
+      systemd = {
+        # runs on every shutdown and arms the next morning wake
+        services.rtc-wake-on-shutdown = {
+          description = "Arm RTC wake for next ${powerOnTime} on shutdown";
+          wantedBy = [ "multi-user.target" ];
+          stopIfChanged = false;
+          restartIfChanged = false;
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            ExecStart = "${pkgs.coreutils}/bin/true";
+            ExecStop = pkgs.writeShellScript "arm-rtc-wake" ''
+              set -euo pipefail
+              now="$(${pkgs.coreutils}/bin/date +%s)"
+              target="$(${pkgs.coreutils}/bin/date -d 'today ${powerOnTime}' +%s)"
 
-      systemd.services.auto-poweroff = {
-        description = "Schedule RTC wake for 09:00 and power off";
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = pkgs.writeShellScript "auto-poweroff" ''
-            set -euo pipefail
-            wake_time="$(${pkgs.coreutils}/bin/date -d 'tomorrow 09:00:00' +%s)"
-            echo "Scheduling RTC wake for $wake_time"
-            ${pkgs.util-linux}/bin/rtcwake -m off -t "$wake_time"
-          '';
+              # if today's morning is already past (or under some minutes away), use tomorrow
+              minutes=5
+              if [ "$target" -le "$((now + minutes * 60))" ]; then
+                target="$(${pkgs.coreutils}/bin/date -d 'tomorrow ${powerOnTime}' +%s)"
+              fi
+
+              echo "Arming RTC wake for $target"
+              ${pkgs.util-linux}/bin/rtcwake -m no -t "$target"
+            '';
+          };
+        };
+
+        # timer for powering off
+        timers.auto-poweroff = {
+          description = "Power off at ${powerOffTime} daily";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar = "*-*-* ${powerOffTime}";
+            Persistent = false;
+            AccuracySec = "1min";
+          };
+        };
+        services.auto-poweroff = {
+          description = "Power off";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${pkgs.systemd}/bin/systemctl poweroff";
+          };
         };
       };
     };
