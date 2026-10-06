@@ -37,8 +37,9 @@
       };
 
       # Decisions endpoint: GLiDE-style POST /v1/systemone served by FastAPI. The model is
-      # loaded once at startup and kept in memory. the dependencies (not Python, which comes from nixpkgs) are
-      # installed by uv, so they are not managed by Nix; nix-ld lets those binaries run.
+      # loaded once at startup and kept in memory. Python comes from nixpkgs (uv never downloads
+      # one); the dependencies are installed by uv, so they are not managed by Nix, and nix-ld
+      # lets their binaries run.
       config = {
         programs.nix-ld = {
           enable = true;
