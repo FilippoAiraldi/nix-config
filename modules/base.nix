@@ -24,6 +24,7 @@ in
       generic.localIPAddr
       nixos.bash
       nixos.boot
+      nixos.decisions
       nixos.dns
       nixos.locale
       nixos.metasearch

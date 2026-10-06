@@ -3,6 +3,7 @@
     { config, lib, ... }:
     let
       services = {
+        decisions = config.decisionsPort;
         gatus = config.gatusPort;
         grafana = config.grafanaPort;
         searxng = config.searxPort;
