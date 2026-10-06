@@ -10,8 +10,8 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 .
 ├── flake.nix            # Inputs; imports everything in modules/
 ├── justfile             # Common rebuild, update, and check commands
-├── ai/                  # AI features (a Nix module plus the code it runs)
 └── modules/
+    ├── ai/              # AI features (a Nix module plus the code it runs)
     ├── configurations/  # Instantiates hosts and generates system checks
     ├── hosts/           # Hosts definitions
     ├── nixos/           # NixOS-only system features
@@ -28,13 +28,13 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 
 - Files under `modules/nixos/`, or `modules/programs/` typically declare modules of a single class (`nixos.*`, `homeManager.*`). Vertical program features may declare modules for more than one class.
 - `modules/base.nix` collects default workstation features into `nixos.base` and `homeManager.base`. Opt-in features are composed by their owning host or parent feature instead.
-- `ai/<feature>/` holds vertical features that ship their own non-Nix code (e.g. a Python service). They are imported by `flake.nix` via `import-tree ./ai` and composed like any other module.
+- `modules/ai/<feature>/` holds vertical features that ship their own non-Nix code (e.g. a Python service). Only its `.nix` files are picked up by `import-tree`.
 - Files and directories prefixed with `_` (for example `_hardware.nix`) are skipped by `import-tree` and imported explicitly where needed.
 
 
 ## Decisions endpoint
 
-`ai/decisions/` runs [`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) as a FastAPI service on `crappy-server` (systemd unit `decisions`, `127.0.0.1:3004`, proxied by Caddy at `https://decisions.crappy-server.home`). The model is loaded once at startup and stays in memory. Python 3.13 and the dependencies are installed by [uv](https://docs.astral.sh/uv/) (CPU-only torch) into `/var/lib/decisions`; `nix-ld` lets those binaries run. The first start downloads everything, so give it a few minutes (see `journalctl -u decisions -f`).
+`modules/ai/decisions/` runs [`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) as a FastAPI service on `crappy-server` (systemd unit `decisions`, `127.0.0.1:3004`, proxied by Caddy at `https://decisions.crappy-server.home`). The model is loaded once at startup and stays in memory. Python 3.13 and the dependencies are installed by [uv](https://docs.astral.sh/uv/) (CPU-only torch) into `/var/lib/decisions`; `nix-ld` lets those binaries run. The first start downloads everything, so give it a few minutes (see `journalctl -u decisions -f`).
 
 The API mirrors the closed-source [GLiDE](https://docs.fastino.ai) `POST /v1/systemone` contract, so switching to it later only means changing the URL and adding the API key. Questions are `noul` (yes/no), `choice` (pick one) or `score` (ordered levels):
 
@@ -60,6 +60,6 @@ curl -s https://decisions.crappy-server.home/v1/systemone -k \
 
 `GET /health` reports readiness. Differences from GLiDE: `usage`/`token_usage` are not returned, `model` is the local model id, all questions of a request are scored in one pass (so they can influence each other slightly), and text containing parentheses is rejected with 422 because the model prompt cannot carry them.
 
-Development (from `ai/decisions/`): `uv run pytest` runs the tests with a stub classifier; `uv run uvicorn decisions.api:app` serves locally.
+Development (from `modules/ai/decisions/`): `uv run pytest` runs the tests with a stub classifier; `uv run uvicorn decisions.api:app` serves locally.
 
-`uv.lock` is not committed yet: the CPU torch index (`download.pytorch.org`) was unreachable when this was written, so the service resolves on first start. Run `uv lock` in `ai/decisions/` and commit the result to pin versions.
+`uv.lock` is not committed yet: the CPU torch index (`download.pytorch.org`) was unreachable when this was written, so the service resolves on first start. Run `uv lock` in `modules/ai/decisions/` and commit the result to pin versions.
