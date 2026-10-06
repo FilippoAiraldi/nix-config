@@ -120,14 +120,14 @@
                   }
 
                   # direct localhost checks
-                  (local "Decisions" config.ai.decisionsPort "/health")
+                  (local "ai.decisions" config.ai.decisionsPort "/health")
                   (local "Grafana" config.grafanaPort "/")
                   (local "Pi-Hole Web" config.piholeWebPort "/")
                   (local "SearXNG" config.searxPort "/")
                   (local "Syncthing" config.syncthingPort "/")
 
                   # end-to-end through Caddy
-                  (viaCaddy "decisions" "/health")
+                  (viaCaddy "ai.decisions" "/health")
                   (viaCaddy "grafana" "/")
                   (viaCaddy "pihole" "/")
                   (viaCaddy "searxng" "/")
