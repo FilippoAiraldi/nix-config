@@ -3,7 +3,7 @@ from types import MappingProxyType
 import pytest
 from fastapi.testclient import TestClient
 
-from decisions.api import app
+from app.api import app
 
 
 class FakeResult:

@@ -77,7 +77,7 @@ class NoulAnswer(BaseModel):
     """Answer to a `noul` question.
 
     `noul` is the probability (0 to 1) that the answer is true. `confidence` is 0 at a 50/50 split
-    and 1 when the model is certain either way.
+    and 1 when the model is certain either way (entropy-based).
     """
 
     type: Literal["noul"] = "noul"
@@ -88,8 +88,9 @@ class NoulAnswer(BaseModel):
 class ChoiceAnswer(BaseModel):
     """Answer to a `choice` question.
 
-    `choice` is the winning option key. `confidence` is the gap between the top two probabilities,
-    and `probabilities` holds the score of every option.
+    `choice` is the winning option key. `confidence` is 1 minus the normalized entropy of the
+    probabilities (0 when uniform, 1 when certain), and `probabilities` holds the score of every
+    option.
     """
 
     type: Literal["choice"] = "choice"

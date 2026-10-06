@@ -15,7 +15,7 @@
         fileset = lib.fileset.unions [
           ./.python-version
           ./pyproject.toml
-          ./decisions
+          ./app
           (lib.fileset.maybeMissing ./uv.lock)
         ];
       };
@@ -87,7 +87,7 @@
 
           script = ''
             cd ${stateDir}/project
-            exec ${stateDir}/venv/bin/uvicorn decisions.api:app \
+            exec ${stateDir}/venv/bin/uvicorn app.api:app \
               --host 127.0.0.1 --port ${toString config.ai.decisionsPort}
           '';
 

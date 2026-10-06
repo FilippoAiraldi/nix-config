@@ -4,13 +4,13 @@ Local, GLiDE-style decision endpoint running on `crappy-server`. It is queried w
 
 ## Overview
 
-[`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) is served by a FastAPI app (`decisions/`) and wrapped in a NixOS module (`default.nix`).
+[`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) is served by a FastAPI app (`app/`) and wrapped in a NixOS module (`default.nix`).
 
 | Item         | Value                                                               |
 | ------------ | ------------------------------------------------------------------- |
 | systemd unit | `decisions`                                                         |
 | Listens on   | `127.0.0.1:3004` (option `ai.decisionsPort`)                        |
-| Proxied at   | `https://decisions.crappy-server.home` (Caddy)                      |
+| Proxied at   | `https://ai.decisions.crappy-server.home` (Caddy)                      |
 | Health check | `GET /health`, also monitored by Gatus                              |
 | State        | `/var/lib/decisions` (project copy, venv, Hugging Face model cache) |
 
@@ -52,6 +52,7 @@ curl -s https://ai.decisions.crappy-server.home/v1/systemone -k \
 ### Differences from GLiDE
 
 - `usage` and `token_usage` are not returned.
+- `confidence` is entropy-based (`1 - H(p) / log n`, from 0 for a uniform distribution to 1 for a certain one) instead of GLiDE's top1 - top2 margin.
 - `model` is the local model id.
 - All questions of a request are scored in one pass, so they can influence each other slightly.
 - Text containing parentheses is rejected with 422, because the model prompt cannot carry them.
@@ -61,5 +62,5 @@ curl -s https://ai.decisions.crappy-server.home/v1/systemone -k \
 From `modules/ai/decisions/`:
 
 - `uv run pytest` runs the tests with a stub classifier.
-- `uv run uvicorn decisions.api:app` serves locally.
+- `uv run uvicorn app.api:app` serves locally.
 
