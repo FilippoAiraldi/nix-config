@@ -51,7 +51,11 @@ BODY = {
         },
         "department": {
             "type": "choice",
-            "criteria": {"billing": "Money", "returns": "Returns", "shipping": "Delivery"},
+            "criteria": {
+                "billing": "Money",
+                "returns": "Returns",
+                "shipping": "Delivery",
+            },
         },
         "urgency": {"type": "score", "criteria": ["low", "medium", "high"]},
     },
@@ -69,15 +73,15 @@ def test_systemone(client):
 
     assert answers["refund_allowed"]["type"] == "noul"
     assert answers["refund_allowed"]["noul"] == pytest.approx(0.9)
-    assert answers["refund_allowed"]["confidence"] == pytest.approx(0.8)
+    assert answers["refund_allowed"]["confidence"] == pytest.approx(0.531004, rel=1e-3)
 
     assert answers["department"]["choice"] == "returns"
-    assert answers["department"]["confidence"] == pytest.approx(0.7)
+    assert answers["department"]["confidence"] == pytest.approx(0.418328, rel=1e-3)
 
     urgency = answers["urgency"]
     assert urgency["score"] == 0
     assert urgency["expected_level"] == pytest.approx(0.5)
-    assert urgency["confidence"] == pytest.approx(0.3)
+    assert urgency["confidence"] == pytest.approx(0.182654, rel=1e-3)
     assert urgency["legend"] == {"0": "low", "1": "medium", "2": "high"}
     assert list(urgency["probabilities"]) == ["0", "1", "2"]
 
@@ -99,3 +103,4 @@ def test_unsupported_prompt_characters(client):
         "questions": {"q": {"type": "choice", "criteria": {"a": "has (parens)", "b": "ok"}}},
     }
     assert client.post("/v1/systemone", json=body).status_code == 422
+

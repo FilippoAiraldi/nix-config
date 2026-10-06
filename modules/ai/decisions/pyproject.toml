@@ -1,5 +1,5 @@
 [project]
-name = "decisions"
+name = "ai.decisions"
 version = "0.1.0"
 description = "GLiDE-style decision endpoint backed by fastino/GLiNER2.5-Decide"
 requires-python = ">=3.10,<3.14"
@@ -16,6 +16,10 @@ dev = [
     "pytest>=8",
 ]
 
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
 [tool.uv]
 package = false
 
@@ -31,3 +35,4 @@ explicit = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
