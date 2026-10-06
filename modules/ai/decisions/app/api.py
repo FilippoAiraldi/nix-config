@@ -36,7 +36,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     yield
 
 
-app = FastAPI(title="ai.decisions", lifespan=lifespan)
+app = FastAPI(title="ai-decisions", lifespan=lifespan)
 
 
 @app.get("/health")

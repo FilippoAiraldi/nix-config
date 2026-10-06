@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.ai.decisions =
+  flake.modules.nixos."ai-decisions" =
     {
       config,
       lib,
@@ -22,7 +22,7 @@
       };
     in
     {
-      options.ai.decisionsPort = lib.mkOption {
+      options."ai-decisionsPort" = lib.mkOption {
         type = lib.types.int;
         description = "AI-decisions endpoint port";
         default = 3004;
@@ -82,7 +82,7 @@
         script = ''
           cd ${stateDir}/project
           exec ${stateDir}/venv/bin/uvicorn app.api:app \
-            --host 127.0.0.1 --port ${toString config.ai.decisionsPort}
+            --host 127.0.0.1 --port ${toString config."ai-decisionsPort"}
         '';
 
       };
