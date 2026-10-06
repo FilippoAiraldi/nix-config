@@ -34,7 +34,7 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 
 ## Decisions endpoint
 
-`modules/ai/decisions/` runs [`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) as a FastAPI service on `crappy-server` (systemd unit `decisions`, `127.0.0.1:3004`, proxied by Caddy at `https://decisions.crappy-server.home`). The model is loaded once at startup and stays in memory. Python 3.13 and the dependencies are installed by [uv](https://docs.astral.sh/uv/) (CPU-only torch) into `/var/lib/decisions`; `nix-ld` lets those binaries run. The first start downloads everything, so give it a few minutes (see `journalctl -u decisions -f`).
+`modules/ai/decisions/` runs [`fastino/GLiNER2.5-Decide`](https://huggingface.co/fastino/GLiNER2.5-Decide) as a FastAPI service on `crappy-server` (systemd unit `decisions`, `127.0.0.1:3004`, proxied by Caddy at `https://decisions.crappy-server.home`). The model is loaded once at startup and stays in memory. Python 3.13 comes from nixpkgs (uv is told never to download one); the dependencies are installed by [uv](https://docs.astral.sh/uv/) (CPU-only torch) into a venv in `/var/lib/decisions`, which is rebuilt when the Python store path changes; `nix-ld` lets the wheels' native libraries run. The first start downloads torch and the model, so give it a few minutes (see `journalctl -u decisions -f`).
 
 The API mirrors the closed-source [GLiDE](https://docs.fastino.ai) `POST /v1/systemone` contract, so switching to it later only means changing the URL and adding the API key. Questions are `noul` (yes/no), `choice` (pick one) or `score` (ordered levels):
 

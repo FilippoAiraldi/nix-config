@@ -20,6 +20,9 @@
         ];
       };
 
+      # torch.jit.script is needed, so stay on Python 3.13 or older
+      python = pkgs.python313;
+
       # Libraries needed by the manylinux wheels (torch, numpy, ...) that uv installs.
       ldLibraries = with pkgs; [
         stdenv.cc.cc.lib
@@ -34,7 +37,7 @@
       };
 
       # Decisions endpoint: GLiDE-style POST /v1/systemone served by FastAPI. The model is
-      # loaded once at startup and kept in memory. Python (3.13) and the dependencies are
+      # loaded once at startup and kept in memory. the dependencies (not Python, which comes from nixpkgs) are
       # installed by uv, so they are not managed by Nix; nix-ld lets those binaries run.
       config = {
         programs.nix-ld = {
@@ -50,15 +53,16 @@
           path = [
             pkgs.coreutils
             pkgs.uv
+            python
           ];
 
           environment = {
             HOME = stateDir;
             HF_HOME = "${stateDir}/huggingface";
             UV_CACHE_DIR = "/var/cache/decisions";
-            UV_PYTHON_INSTALL_DIR = "${stateDir}/python";
             UV_PROJECT_ENVIRONMENT = "${stateDir}/venv";
-            UV_PYTHON_PREFERENCE = "only-managed";
+            UV_PYTHON_DOWNLOADS = "never";
+            UV_PYTHON_PREFERENCE = "only-system";
             UV_NO_DEV = "1";
             # services do not get the login-shell variables that programs.nix-ld sets
             NIX_LD = pkgs.stdenv.cc.bintools.dynamicLinker;
@@ -72,6 +76,11 @@
             mkdir -p ${stateDir}/project
             cp -r --no-preserve=mode ${src}/. ${stateDir}/project
             cd ${stateDir}/project
+            # the venv links to the store Python; rebuild it when that interpreter changes
+            if [ "$(cat ${stateDir}/venv.python 2>/dev/null)" != "${python}" ]; then
+              rm -rf ${stateDir}/venv
+              echo "${python}" > ${stateDir}/venv.python
+            fi
             uv sync
           '';
 
@@ -87,7 +96,7 @@
             CacheDirectory = "decisions";
             Restart = "on-failure";
             RestartSec = "10s";
-            # first start downloads Python, torch and the model
+            # first start downloads torch and the model
             TimeoutStartSec = "30min";
             NoNewPrivileges = true;
             ProtectHome = true;
