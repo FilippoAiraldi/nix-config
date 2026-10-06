@@ -120,7 +120,7 @@
                   }
 
                   # direct localhost checks
-                  (local "Decisions" config.decisionsPort "/health")
+                  (local "Decisions" config.ai.decisionsPort "/health")
                   (local "Grafana" config.grafanaPort "/")
                   (local "Pi-Hole Web" config.piholeWebPort "/")
                   (local "SearXNG" config.searxPort "/")

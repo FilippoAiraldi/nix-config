@@ -30,7 +30,7 @@
       ];
     in
     {
-      options.decisionsPort = lib.mkOption {
+      options.ai.decisionsPort = lib.mkOption {
         type = lib.types.int;
         description = "Decisions (GLiNER2.5-Decide) endpoint port";
         default = 3004;
@@ -88,7 +88,7 @@
           script = ''
             cd ${stateDir}/project
             exec ${stateDir}/venv/bin/uvicorn decisions.api:app \
-              --host 127.0.0.1 --port ${toString config.decisionsPort}
+              --host 127.0.0.1 --port ${toString config.ai.decisionsPort}
           '';
 
           serviceConfig = {
