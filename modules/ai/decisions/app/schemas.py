@@ -77,7 +77,7 @@ class NoulAnswer(BaseModel):
     """Answer to a `noul` question.
 
     `noul` is the probability (0 to 1) that the answer is true. `confidence` is 0 at a 50/50 split
-    and 1 when the model is certain either way (entropy-based).
+    and 1 when the model is certain either way.
     """
 
     type: Literal["noul"] = "noul"

@@ -10,7 +10,7 @@ Local, GLiDE-style decision endpoint running on `crappy-server`. It is queried w
 | ------------ | ------------------------------------------------------------------- |
 | systemd unit | `decisions`                                                         |
 | Listens on   | `127.0.0.1:3004` (option `ai.decisionsPort`)                        |
-| Proxied at   | `https://ai.decisions.crappy-server.home` (Caddy)                      |
+| Proxied at   | `https://ai.decisions.crappy-server.home` (Caddy)                   |
 | Health check | `GET /health`, also monitored by Gatus                              |
 | State        | `/var/lib/decisions` (project copy, venv, Hugging Face model cache) |
 
