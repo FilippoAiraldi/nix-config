@@ -22,9 +22,9 @@ in
   flake.modules.nixos.server = {
     imports = commonImports ++ [
       generic.localIPAddr
+      nixos.ai.decisions
       nixos.bash
       nixos.boot
-      nixos.decisions
       nixos.dns
       nixos.locale
       nixos.metasearch
