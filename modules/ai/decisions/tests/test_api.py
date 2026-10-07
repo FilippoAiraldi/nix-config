@@ -3,7 +3,7 @@ from types import MappingProxyType
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api import app
+from app.api import MODEL_ID, app
 
 
 class FakeResult:
@@ -64,6 +64,14 @@ BODY = {
 
 def test_health(client):
     assert client.get("/health").status_code == 200
+
+
+def test_chat_page(client):
+    r = client.get("/chat")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/html")
+    assert MODEL_ID in r.text
+    assert "__MODEL_ID__" not in r.text
 
 
 def test_systemone(client):

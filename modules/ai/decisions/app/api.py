@@ -1,14 +1,17 @@
 """FastAPI app. The model is loaded once at startup and kept in memory."""
 
+import html
 import logging
 import os
 import threading
 import time
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import HTMLResponse
 from gliner2.classification import SchemaError
 
 from .engine import decide
@@ -16,6 +19,9 @@ from .schemas import Answer, SystemOneRequest, SystemOneResponse
 
 MODEL_ID = os.environ.get("AI_DECISIONS_MODEL", "fastino/GLiNER2.5-Decide")
 logger = logging.getLogger("uvicorn.error")
+CHAT_PAGE = (Path(__file__).parent / "chat.html").read_text().replace(
+    "__MODEL_ID__", html.escape(MODEL_ID)
+)
 
 
 @asynccontextmanager
@@ -51,6 +57,12 @@ async def health(request: Request) -> dict[str, str]:
 
     logger.debug("health check ok")
     return {"status": "ok", "model": MODEL_ID}
+
+
+@app.get("/chat", response_class=HTMLResponse)
+async def chat() -> str:
+    """Serves a small browser page to try the model: enter a state and questions, then run."""
+    return CHAT_PAGE
 
 
 @app.post("/v1/systemone", response_model_exclude_none=True)
