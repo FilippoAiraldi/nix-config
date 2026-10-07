@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Decisions</title>
+<style>
+  body { font-family: sans-serif; max-width: 50rem; margin: 1rem auto; padding: 0 1rem; }
+  #model { position: fixed; top: .5rem; right: .75rem; font-size: .8rem; color: #666; }
+  label { display: block; margin-top: .5rem; font-size: .9rem; }
+  input, select, textarea { width: 100%; box-sizing: border-box; font: inherit; }
+  textarea { font-family: monospace; }
+  fieldset { margin-top: 1rem; }
+  button { font: inherit; }
+  #run { width: 100%; font-size: 1.4rem; padding: .6rem; margin-top: 1rem; }
+  .hint { color: #666; font-size: .8rem; }
+  .error { color: #b00020; }
+</style>
+</head>
+<body>
+<div id="model">Model: __MODEL_ID__</div>
+<h1>Decisions</h1>
+
+<label for="state">State</label>
+<textarea id="state" rows="5" placeholder="The text to judge"></textarea>
+
+<div id="questions"></div>
+<p>
+  <select id="new-type">
+    <option value="noul">noul (yes/no)</option>
+    <option value="choice">choice (pick one)</option>
+    <option value="score">score (ordered levels)</option>
+  </select>
+  <button type="button" id="add">+ Add question</button>
+</p>
+
+<button type="button" id="run">Run</button>
+
+<label for="output">Output</label>
+<textarea id="output" rows="16" readonly></textarea>
+
+<script>
+const FIELDS = {
+  noul: [
+    ["true", "Label for yes (optional, default: Yes)", "input"],
+    ["false", "Label for no (optional, default: No)", "input"],
+  ],
+  choice: [
+    ["criteria", "Options, one per line as key: description", "textarea"],
+  ],
+  score: [
+    ["criteria", "Levels, one per line, lowest first", "textarea"],
+  ],
+};
+
+function field(name, label, kind, rows) {
+  const wrap = document.createElement("label");
+  wrap.textContent = label;
+  const el = document.createElement(kind);
+  el.dataset.name = name;
+  if (kind === "textarea") el.rows = rows || 4;
+  wrap.append(el);
+  return wrap;
+}
+
+function addQuestion(type) {
+  const box = document.createElement("fieldset");
+  box.dataset.type = type;
+  const legend = document.createElement("legend");
+  legend.textContent = type;
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.textContent = "Remove";
+  remove.onclick = () => box.remove();
+  legend.append(" ", remove);
+  box.append(legend, field("name", "Name (used as the key in the answer)", "input"),
+             field("instructions", "Instructions (optional)", "input"));
+  for (const [name, label, kind] of FIELDS[type]) box.append(field(name, label, kind));
+  document.getElementById("questions").append(box);
+}
+
+function value(box, name) {
+  return box.querySelector(`[data-name="${name}"]`).value.trim();
+}
+
+function lines(text) {
+  return text.split("\n").map((l) => l.trim()).filter(Boolean);
+}
+
+function buildQuestion(box) {
+  const type = box.dataset.type;
+  const question = { type };
+  const instructions = value(box, "instructions");
+  if (instructions) question.instructions = instructions;
+
+  if (type === "noul") {
+    const criteria = {};
+    for (const key of ["true", "false"]) if (value(box, key)) criteria[key] = value(box, key);
+    if (Object.keys(criteria).length) question.criteria = criteria;
+  } else if (type === "choice") {
+    question.criteria = {};
+    for (const line of lines(value(box, "criteria"))) {
+      const i = line.indexOf(":");
+      const key = (i < 0 ? line : line.slice(0, i)).trim();
+      question.criteria[key] = i < 0 ? key : line.slice(i + 1).trim() || key;
+    }
+  } else {
+    question.criteria = lines(value(box, "criteria"));
+  }
+  return question;
+}
+
+async function run() {
+  const output = document.getElementById("output");
+  const button = document.getElementById("run");
+  const questions = {};
+  for (const box of document.querySelectorAll("#questions fieldset")) {
+    const name = value(box, "name");
+    if (!name) return void (output.value = "Every question needs a name.");
+    if (name in questions) return void (output.value = `Duplicate question name: ${name}`);
+    questions[name] = buildQuestion(box);
+  }
+
+  button.disabled = true;
+  output.value = "Running...";
+  try {
+    const response = await fetch("v1/systemone", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state: document.getElementById("state").value, questions }),
+    });
+    output.value = JSON.stringify(await response.json(), null, 2);
+  } catch (error) {
+    output.value = `Request failed: ${error}`;
+  } finally {
+    button.disabled = false;
+  }
+}
+
+document.getElementById("add").onclick = () => addQuestion(document.getElementById("new-type").value);
+document.getElementById("run").onclick = run;
+</script>
+</body>
+</html>
