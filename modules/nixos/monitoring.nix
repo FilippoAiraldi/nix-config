@@ -6,19 +6,19 @@
       every = "5m";
 
       # localhost check of a service
-      local = name: port: {
+      local = name: port: path: {
         name = "${name} (local)";
         group = "services";
-        url = "http://127.0.0.1:${toString port}/";
+        url = "http://127.0.0.1:${toString port}${path}";
         interval = every;
         conditions = [ "[STATUS] < 400" ];
       };
 
       # end-to-end check through Caddy (DNS + TLS + proxy)
-      viaCaddy = name: {
+      viaCaddy = name: path: {
         name = "${name} (Caddy)";
         group = "caddy";
-        url = "https://${name}.${domain}/";
+        url = "https://${name}.${domain}${path}";
         interval = every;
         client.insecure = true; # Caddy's internal CA is not trusted by the Gatus process
         conditions = [ "[STATUS] < 400" ];
@@ -120,17 +120,19 @@
                   }
 
                   # direct localhost checks
-                  (local "Grafana" config.grafanaPort)
-                  (local "Pi-Hole Web" config.piholeWebPort)
-                  (local "SearXNG" config.searxPort)
-                  (local "Syncthing" config.syncthingPort)
+                  (local "ai-decisions" config."ai-decisionsPort" "/health")
+                  (local "Grafana" config.grafanaPort "/")
+                  (local "Pi-Hole Web" config.piholeWebPort "/")
+                  (local "SearXNG" config.searxPort "/")
+                  (local "Syncthing" config.syncthingPort "/")
 
                   # end-to-end through Caddy
-                  (viaCaddy "grafana")
-                  (viaCaddy "pihole")
-                  (viaCaddy "searxng")
-                  (viaCaddy "syncthing")
-                  (viaCaddy "gatus")
+                  (viaCaddy "ai-decisions" "/health")
+                  (viaCaddy "grafana" "/")
+                  (viaCaddy "pihole" "/")
+                  (viaCaddy "searxng" "/")
+                  (viaCaddy "syncthing" "/")
+                  (viaCaddy "gatus" "/")
                 ];
             };
           };
