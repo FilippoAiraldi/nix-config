@@ -7,57 +7,51 @@
       ...
     }:
     let
-      stateDir = "/var/lib/ai/decisions";
-
       python = pkgs.python313;
-
-      src = lib.fileset.toSource {
-        root = ./.;
-        fileset = lib.fileset.unions [
-          ./.python-version
-          ./pyproject.toml
-          ./app
-          ./uv.lock
-        ];
-      };
+      stateDir = "/var/lib/ai/decisions";
+      idleTimeout = "1h";
+      startTimeout = "1800"; # in seconds (30min)
     in
     {
-      options."ai-decisionsPort" = lib.mkOption {
-        type = lib.types.int;
-        description = "AI-decisions endpoint port";
-        default = 3004;
-      };
+      options = {
+        "ai-decisionsPort" = lib.mkOption {
+          type = lib.types.int;
+          description = "AI-decisions endpoint port";
+          default = 3004;
+        };
 
-      options."ai-decisionsBackendPort" = lib.mkOption {
-        type = lib.types.int;
-        description = "AI-decisions internal (backend) port; the public port proxies to it";
-        default = 3005;
+        "ai-decisionsBackendPort" = lib.mkOption {
+          type = lib.types.int;
+          description = "AI-decisions internal (backend) port; the public port proxies to it";
+          default = 3005;
+        };
       };
 
       config.systemd = {
         # socket to start the proxy (and thus the backend) on first request
-        sockets.ai-decisions = {
+        sockets.ai-decisions-proxy = {
           description = "AI-decisions listening socket";
           wantedBy = [ "sockets.target" ];
           listenStreams = [ "127.0.0.1:${toString config."ai-decisionsPort"}" ];
-          socketConfig.Service = "ai-decisions-proxy.service";
         };
 
-        # proxy to the backend; exits when idle for one hour, which in turn stops the backend
+        # proxy to the backend; exits when idle for too long, stopping the backend in turn
         services.ai-decisions-proxy = {
           description = "AI-decisions idle-timeout proxy";
           requires = [ "ai-decisions.service" ];
           after = [ "ai-decisions.service" ];
           serviceConfig = {
-            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=1h 127.0.0.1:${toString config."ai-decisionsBackendPort"}";
+            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=1h 127.0.0.1:${
+              toString config."ai-decisionsBackendPort"
+            }";
             DynamicUser = true;
             PrivateTmp = true;
           };
         };
 
+        # main service
         services.ai-decisions = {
           description = "AI-decisions endpoint";
-          unitConfig.StopWhenUnneeded = true; # stopped once the proxy exits
           wants = [ "network-online.target" ];
           after = [ "network-online.target" ];
           path = [
@@ -79,48 +73,63 @@
               pkgs.zlib
             ]; # ld libs needed by torch, numpy, etc
           };
+          unitConfig.StopWhenUnneeded = true; # stops once the proxy exits
           serviceConfig = {
             DynamicUser = true;
             StateDirectory = "ai/decisions"; # matches stateDir
             CacheDirectory = "ai/decisions"; # matches uv cache dir
             Restart = "on-failure";
             RestartSec = "10s";
-            TimeoutStartSec = "30min"; # enough time to download/install torch and model
+            TimeoutStartSec = "${startTimeout}s"; # enough time to download/install torch model
             NoNewPrivileges = true; # disable sudo in service and its child
             ProtectHome = true; # remove service's access to home directories
             ExecPaths = [ "/var/lib/private/ai/decisions" ]; # path from which programs can be exec
           };
 
-          preStart = ''
-            # copy Python project anew
-            rm -rf ${stateDir}/project
-            mkdir -p ${stateDir}/project
-            cp -r --no-preserve=mode ${src}/. ${stateDir}/project
-            cd ${stateDir}/project
+          preStart =
+            let
+              src = lib.fileset.toSource {
+                root = ./.;
+                fileset = lib.fileset.unions [
+                  ./.python-version
+                  ./pyproject.toml
+                  ./app
+                  ./uv.lock
+                ];
+              };
+            in
+            ''
+              # copy Python project anew
+              rm -rf ${stateDir}/project
+              mkdir -p ${stateDir}/project
+              cp -r --no-preserve=mode ${src}/. ${stateDir}/project
+              cd ${stateDir}/project
 
-            # compare the last interpreter's store path (if any, due to 2>dev/null) with the current
-            # and rebuilt if different
-            if [ "$(cat "$UV_PROJECT_ENVIRONMENT.python" 2>/dev/null)" != "${python}" ]; then
-              rm -rf "$UV_PROJECT_ENVIRONMENT"
-              echo "${python}" > "$UV_PROJECT_ENVIRONMENT.python"
-            fi
-            uv sync --locked
-          '';
+              # compare the last interpreter's store path (if any, due to 2>dev/null) with the current
+              # and rebuilt if different
+              if [ "$(cat "$UV_PROJECT_ENVIRONMENT.python" 2>/dev/null)" != "${python}" ]; then
+                rm -rf "$UV_PROJECT_ENVIRONMENT"
+                echo "${python}" > "$UV_PROJECT_ENVIRONMENT.python"
+              fi
+              uv sync --locked
+            '';
 
           script = ''
+            # launch the server
             cd ${stateDir}/project
             exec ${stateDir}/venv/bin/python -m uvicorn app.api:app \
               --host 127.0.0.1 --port ${toString config."ai-decisionsBackendPort"}
           '';
 
-          # block until the backend accepts connections, so the proxy doesn't forward too early
           postStart = ''
-            for _ in $(seq 1 1800); do
+            # keep unit in "activating" until uvicorn accepts connections
+            for _ in $(seq 1 ${startTimeout}); do
               if (exec 3<>/dev/tcp/127.0.0.1/${toString config."ai-decisionsBackendPort"}) 2>/dev/null; then
                 exit 0
               fi
               sleep 1
             done
+            echo "backend did not open its port in time" >&2
             exit 1
           '';
         };
