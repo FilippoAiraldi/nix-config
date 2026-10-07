@@ -41,7 +41,7 @@
           requires = [ "ai-decisions.service" ];
           after = [ "ai-decisions.service" ];
           serviceConfig = {
-            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=1h 127.0.0.1:${
+            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=${idleTimeout} 127.0.0.1:${
               toString config."ai-decisionsBackendPort"
             }";
             DynamicUser = true;
