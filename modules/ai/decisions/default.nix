@@ -28,16 +28,36 @@
         default = 3004;
       };
 
+      options."ai-decisionsBackendPort" = lib.mkOption {
+        type = lib.types.int;
+        description = "AI-decisions internal (backend) port; the public port proxies to it";
+        default = 3005;
+      };
+
       config.systemd = {
-        # socket to start service on first request
+        # socket to start the proxy (and thus the backend) on first request
         sockets.ai-decisions = {
           description = "AI-decisions listening socket";
           wantedBy = [ "sockets.target" ];
           listenStreams = [ "127.0.0.1:${toString config."ai-decisionsPort"}" ];
+          socketConfig.Service = "ai-decisions-proxy.service";
+        };
+
+        # proxy to the backend; exits when idle for one hour, which in turn stops the backend
+        services.ai-decisions-proxy = {
+          description = "AI-decisions idle-timeout proxy";
+          requires = [ "ai-decisions.service" ];
+          after = [ "ai-decisions.service" ];
+          serviceConfig = {
+            ExecStart = "${pkgs.systemd}/lib/systemd/systemd-socket-proxyd --exit-idle-time=1h 127.0.0.1:${toString config."ai-decisionsBackendPort"}";
+            DynamicUser = true;
+            PrivateTmp = true;
+          };
         };
 
         services.ai-decisions = {
           description = "AI-decisions endpoint";
+          unitConfig.StopWhenUnneeded = true; # stopped once the proxy exits
           wants = [ "network-online.target" ];
           after = [ "network-online.target" ];
           path = [
@@ -89,7 +109,19 @@
 
           script = ''
             cd ${stateDir}/project
-            exec ${stateDir}/venv/bin/python -m uvicorn app.api:app --fd 3
+            exec ${stateDir}/venv/bin/python -m uvicorn app.api:app \
+              --host 127.0.0.1 --port ${toString config."ai-decisionsBackendPort"}
+          '';
+
+          # block until the backend accepts connections, so the proxy doesn't forward too early
+          postStart = ''
+            for _ in $(seq 1 1800); do
+              if (exec 3<>/dev/tcp/127.0.0.1/${toString config."ai-decisionsBackendPort"}) 2>/dev/null; then
+                exit 0
+              fi
+              sleep 1
+            done
+            exit 1
           '';
         };
       };
