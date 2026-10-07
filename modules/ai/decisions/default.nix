@@ -41,7 +41,7 @@
         environment = {
           HOME = stateDir; # home for the dynamic user
           HF_HOME = "${stateDir}/hf"; # HF local storage
-          HF_HUB_OFFLINE = "0"; # disable http calls to HF
+          HF_HUB_OFFLINE = "1"; # disable http calls to HF
           UV_CACHE_DIR = "/var/cache/ai/decisions";
           UV_PROJECT_ENVIRONMENT = "${stateDir}/venv"; # directory to use as venv
           UV_PYTHON_DOWNLOADS = "never"; # disable downloading Python binary
@@ -61,6 +61,7 @@
           TimeoutStartSec = "30min"; # enough time to download/install torch and model
           NoNewPrivileges = true; # disable sudo in service and its child
           ProtectHome = true; # remove service's access to home directories
+          ExecPaths = [ "/var/lib/private/ai/decisions" ];  # path from which programs can be exec
         };
 
         preStart = ''
@@ -81,7 +82,7 @@
 
         script = ''
           cd ${stateDir}/project
-          exec ${stateDir}/venv/bin/uvicorn app.api:app \
+          exec ${stateDir}/venv/bin/python -m uvicorn app.api:app \
             --host 127.0.0.1 --port ${toString config."ai-decisionsPort"}
         '';
 
