@@ -25,12 +25,18 @@ The model is loaded once at startup and stays in memory, so requests do not pay 
 
 ## API
 
+For checking the health of the API, use
+
+```bash
+curl -k https://ai-decisions.crappy-server.home/health
+```
+
 The API mirrors the closed-source [GLiDE](https://docs.fastino.ai/inference/systemone) `POST /v1/systemone` contract, so switching to it later only means changing the URL and adding the API key.
 
 Questions are `noul` (yes/no), `choice` (pick one) or `score` (ordered levels):
 
 ```bash
-curl -s https://ai-decisions.crappy-server.home/v1/systemone -k \
+curl -k https://ai-decisions.crappy-server.home/v1/systemone \
   -H "Content-Type: application/json" \
   -d '{
     "state": "Refund request: the receipt is attached, the purchase was 10 days ago, and refunds are allowed within 30 days.",
