@@ -57,7 +57,7 @@ curl -k https://ai-decisions.crappy-server.home/v1/systemone \
 
 ### Browser page
 
-Open `https://ai-decisions.crappy-server.home/chat` to try the model without curl. The model id in use is shown in the top-right corner. Enter the state, add questions with the `+` button (a name, optional instructions, and the fields of the chosen type: yes/no labels for `noul`, `key: description` lines for `choice`, one level per line for `score`), then press **Run**: the JSON answer appears in the output field. The page is a single static HTML file (`app/chat.html`) that calls `POST /v1/systemone`.
+Open `https://ai-decisions.crappy-server.home/chat` to try the model without curl.
 
 ### Differences from GLiDE
 

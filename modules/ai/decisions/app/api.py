@@ -18,10 +18,10 @@ from .engine import decide
 from .schemas import Answer, SystemOneRequest, SystemOneResponse
 
 MODEL_ID = os.environ.get("AI_DECISIONS_MODEL", "fastino/GLiNER2.5-Decide")
-logger = logging.getLogger("uvicorn.error")
 CHAT_PAGE = (Path(__file__).parent / "chat.html").read_text().replace(
     "__MODEL_ID__", html.escape(MODEL_ID)
 )
+logger = logging.getLogger("uvicorn.error")
 
 
 @asynccontextmanager
@@ -62,6 +62,7 @@ async def health(request: Request) -> dict[str, str]:
 @app.get("/chat", response_class=HTMLResponse)
 async def chat() -> str:
     """Serves a small browser page to try the model: enter a state and questions, then run."""
+    logger.info("serving chat page")
     return CHAT_PAGE
 
 
