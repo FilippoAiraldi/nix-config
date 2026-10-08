@@ -16,7 +16,7 @@ The model is `smollm2:135m` by default, a tiny model chosen to make debugging ea
 
 ## Open-WebUI
 
-`webui.nix` runs `services.open-webui` (`127.0.0.1:3008`, option `ai-chat-webuiPort`, proxied at `https://ai-chat-webui.crappy-server.home`) on top of the Ollama server. Web search is enabled through the local searXNG (`SEARXNG_QUERY_URL`), which therefore must return JSON (`settings.search.formats` in `nixos/metasearch.nix`). Tiny models such as `smollm2:135m` use search results poorly; try a 1-3B model.
+`webui.nix` runs `services.open-webui` (at `https://ai-chat-webui.crappy-server.home`) on top of the Ollama server.
 
 ## Usage
 

@@ -8,7 +8,7 @@
         default = 3008;
       };
 
-      # browser UI for the Ollama models, with web search through the local searXNG
+      # Open-WebUI server
       # https://docs.openwebui.com/features/web-search/providers/searxng
       config.services.open-webui = {
         enable = true;
