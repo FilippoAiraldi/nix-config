@@ -22,7 +22,6 @@
         services.ollama = {
           enable = true;
           package = ollamaPkg;
-          host = "127.0.0.1";
           port = config."ai-chatPort";
           environmentVariables = {
             OLLAMA_LLM_LIBRARY = "cpu_avx2";

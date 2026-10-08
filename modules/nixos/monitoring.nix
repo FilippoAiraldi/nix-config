@@ -120,12 +120,14 @@
                   }
 
                   # direct localhost checks
+                  (local "AI Chat" config."ai-chatPort")
                   (local "Grafana" config.grafanaPort)
                   (local "Pi-Hole Web" config.piholeWebPort)
                   (local "SearXNG" config.searxPort)
                   (local "Syncthing" config.syncthingPort)
 
                   # end-to-end through Caddy
+                  (viaCaddy "ai-chat")
                   (viaCaddy "grafana")
                   (viaCaddy "pihole")
                   (viaCaddy "searxng")
