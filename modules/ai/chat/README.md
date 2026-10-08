@@ -6,23 +6,25 @@ Local LLM chat running on `crappy-server` with [Ollama](https://ollama.com), CPU
 
 | Item         | Value                                                                    |
 | ------------ | ------------------------------------------------------------------------ |
-| systemd unit | `ai-chat` (backend), `ai-chat-proxy` (socket-activated proxy)            |
-| Listens on   | `127.0.0.1:3006` (option `ai-chatPort`); backend on `3007` (`ai-chatBackendPort`) |
+| systemd unit | `ollama` (`services.ollama`)                                              |
+| Listens on   | `127.0.0.1:3006` (option `ai-chatPort`)                                  |
 | Proxied at   | `https://ai-chat.crappy-server.home` (Caddy)                             |
 | Health check | `GET /` returns `Ollama is running`                                      |
-| State        | `/var/lib/ai/chat` (Ollama models)                                       |
+| State        | `/var/lib/ollama` (Ollama models)                                        |
 
 The model is `smollm2:135m` by default, a tiny model chosen to make debugging easier. Override it with the `AI_CHAT_MODEL` environment variable (any Ollama model id).
 
 ## Deployment
 
 - **CPU only:** uses `pkgs.ollama-cpu`, as no GPU is available.
-- **On demand:** a systemd socket starts the proxy (and thus Ollama) on the first request. The proxy exits after 15 minutes of idleness, which also stops Ollama (`StopWhenUnneeded`).
-- **First use:** `ai-chat` pulls the model if not already stored, so give it a moment (see `journalctl -u ai-chat -f`).
+- **Always on:** runs as the NixOS `services.ollama` module, which does not use much RAM when idle.
+- **Idle models:** `OLLAMA_KEEP_ALIVE=5m` unloads a model from RAM after 5 minutes without requests.
+- **CPU library:** `OLLAMA_LLM_LIBRARY=cpu_avx2` forces the AVX2 CPU backend.
+- **Models:** the default model is pulled at startup (`loadModels`); `ai-chat` pulls other models on demand (see `journalctl -u ollama -f`).
 
 ## Usage
 
-Chat in the terminal (opens the Ollama REPL):
+Chat in the terminal:
 
 ```bash
 ai-chat
@@ -31,7 +33,7 @@ AI_CHAT_MODEL=qwen2.5:0.5b ai-chat
 
 ## API
 
-Check that the server is up (this also wakes it):
+Check that the server is up:
 
 ```bash
 curl -k https://ai-chat.crappy-server.home/
