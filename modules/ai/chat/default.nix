@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos."ai-chat" =
+  flake.modules.nixos.ai-chat =
     {
       config,
       lib,
@@ -22,7 +22,7 @@
         services.ollama = {
           enable = true;
           package = ollamaPkg;
-          port = config."ai-chatPort";
+          port = config.ai-chatPort;
           environmentVariables = {
             OLLAMA_LLM_LIBRARY = "cpu_avx2";
             OLLAMA_KEEP_ALIVE = idleTimeout;
@@ -32,7 +32,7 @@
         # convenience command to start chatting in a REPL
         environment.systemPackages = [
           (pkgs.writeShellScriptBin "ai-chat" ''
-            export OLLAMA_HOST=127.0.0.1:${toString config."ai-chatPort"}
+            export OLLAMA_HOST=127.0.0.1:${toString config.ai-chatPort}
             MODEL="''${AI_CHAT_MODEL:-${defaultModel}}"
             echo "Running $MODEL on $OLLAMA_HOST. Use AI_CHAT_MODEL to change the model."
 

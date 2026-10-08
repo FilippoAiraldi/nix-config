@@ -120,7 +120,7 @@
                   }
 
                   # direct localhost checks
-                  (local "AI Chat" config."ai-chatPort")
+                  (local "AI Chat" config.ai-chatPort)
                   (local "Grafana" config.grafanaPort)
                   (local "Pi-Hole Web" config.piholeWebPort)
                   (local "SearXNG" config.searxPort)
