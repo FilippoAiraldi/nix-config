@@ -6,21 +6,13 @@ Local LLM chat running on `crappy-server` with [Ollama](https://ollama.com), CPU
 
 | Item         | Value                                                                    |
 | ------------ | ------------------------------------------------------------------------ |
-| systemd unit | `ollama` (`services.ollama`)                                              |
+| systemd unit | `ollama` (`services.ollama`)                                             |
 | Listens on   | `127.0.0.1:3006` (option `ai-chatPort`)                                  |
 | Proxied at   | `https://ai-chat.crappy-server.home` (Caddy)                             |
 | Health check | `GET /` returns `Ollama is running`                                      |
 | State        | `/var/lib/ollama` (Ollama models)                                        |
 
 The model is `smollm2:135m` by default, a tiny model chosen to make debugging easier. Override it with the `AI_CHAT_MODEL` environment variable (any Ollama model id).
-
-## Deployment
-
-- **CPU only:** uses `pkgs.ollama-cpu`, as no GPU is available.
-- **Always on:** runs as the NixOS `services.ollama` module, which does not use much RAM when idle.
-- **Idle models:** `OLLAMA_KEEP_ALIVE=5m` unloads a model from RAM after 5 minutes without requests.
-- **CPU library:** `OLLAMA_LLM_LIBRARY=cpu_avx2` forces the AVX2 CPU backend.
-- **Models:** the default model is pulled at startup (`loadModels`); `ai-chat` pulls other models on demand (see `journalctl -u ollama -f`).
 
 ## Usage
 

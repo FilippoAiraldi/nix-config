@@ -7,9 +7,9 @@
       ...
     }:
     let
-      ollama = pkgs.ollama-cpu; # CPU-only build, no GPU available
-      model = "smollm2:135m"; # tiny model (default of AI_CHAT_MODEL), easier debugging
-      host = "127.0.0.1:${toString config."ai-chatPort"}";
+      idleTimeout = "30m";
+      ollamaPkg = pkgs.ollama-cpu;
+      defaultModel = "smollm2:135m"; # tiny model (default of AI_CHAT_MODEL), easier debugging
     in
     {
       options."ai-chatPort" = lib.mkOption {
@@ -21,24 +21,22 @@
       config = {
         services.ollama = {
           enable = true;
-          package = ollama;
+          package = ollamaPkg;
           host = "127.0.0.1";
           port = config."ai-chatPort";
-          loadModels = [ model ]; # pulled at startup
           environmentVariables = {
             OLLAMA_LLM_LIBRARY = "cpu_avx2";
-            OLLAMA_KEEP_ALIVE = "5m"; # unload idle models from RAM
+            OLLAMA_KEEP_ALIVE = idleTimeout;
           };
         };
 
-        # `ai-chat` opens a terminal chat with the model given by AI_CHAT_MODEL
+        # convenience command to start chatting in a REPL
         environment.systemPackages = [
-          ollama
           (pkgs.writeShellScriptBin "ai-chat" ''
-            export OLLAMA_HOST=${host}
-            MODEL="''${AI_CHAT_MODEL:-${model}}"
-            ${ollama}/bin/ollama pull "$MODEL" # no-op if already stored
-            exec ${ollama}/bin/ollama run "$MODEL" "$@"
+            export OLLAMA_HOST=127.0.0.1:${toString config."ai-chatPort"}
+            MODEL="''${AI_CHAT_MODEL:-${defaultModel}}"
+            ${ollamaPkg}/bin/ollama pull "$MODEL" # no-op if already stored
+            exec ${ollamaPkg}/bin/ollama run "$MODEL" "$@"  # $@ passes through additional args
           '')
         ];
       };

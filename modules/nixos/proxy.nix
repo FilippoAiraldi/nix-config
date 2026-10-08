@@ -2,17 +2,7 @@
   flake.modules.nixos.proxy =
     { config, lib, ... }:
     let
-      services = {
-        ai-chat = config.ai-chatPort;
-        ai-decisions = config.ai-decisionsPort;
-        gatus = config.gatusPort;
-        grafana = config.grafanaPort;
-        searxng = config.searxPort;
-        syncthing = config.syncthingPort;
-      };
-
       domain = "${config.hostName}.home";
-
       mkVirtualHost = name: port: {
         name = "${name}.${domain}"; # e.g., gatus.crappy-server.home
         value.extraConfig = ''
@@ -34,17 +24,38 @@
       config = {
         services.caddy = {
           enable = true;
-          virtualHosts = lib.mapAttrs' mkVirtualHost services // {
-            # Pi-hole web needs special attention
-            "pihole.${domain}".extraConfig = ''
-              tls internal
-              reverse_proxy https://127.0.0.1:${toString config.piholeWebPort} {
-                transport http {
-                  tls_insecure_skip_verify
+          virtualHosts =
+            # entries here have all the same setup
+            lib.mapAttrs' mkVirtualHost {
+              ai-decisions = config.ai-decisionsPort;
+              gatus = config.gatusPort;
+              grafana = config.grafanaPort;
+              searxng = config.searxPort;
+              syncthing = config.syncthingPort;
+            }
+            //
+            # entries below require special attention
+            {
+              "pihole.${domain}".extraConfig = ''
+                tls internal
+                reverse_proxy https://127.0.0.1:${toString config.piholeWebPort} {
+                  transport http {
+                    tls_insecure_skip_verify
+                  }
                 }
-              }
-            '';
-          };
+              '';
+
+              "ai-chat.${domain}".extraConfig =
+                let
+                  host = "127.0.0.1:${toString config.ai-chatPort}";
+                in
+                ''
+                  tls internal
+                  reverse_proxy ${host} {
+                    header_up Host ${host}
+                  }
+                '';
+            };
         };
 
         networking.firewall.interfaces = lib.genAttrs config.networkInterfaces (_: {
