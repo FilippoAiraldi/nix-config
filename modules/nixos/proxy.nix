@@ -3,6 +3,7 @@
     { config, lib, ... }:
     let
       services = {
+        ai-chat = config.ai-chatPort;
         ai-decisions = config.ai-decisionsPort;
         gatus = config.gatusPort;
         grafana = config.grafanaPort;
@@ -13,7 +14,7 @@
       domain = "${config.hostName}.home";
 
       mkVirtualHost = name: port: {
-        name = "${name}.${domain}";  # e.g., gatus.crappy-server.home
+        name = "${name}.${domain}"; # e.g., gatus.crappy-server.home
         value.extraConfig = ''
           tls internal
           reverse_proxy 127.0.0.1:${toString port}
