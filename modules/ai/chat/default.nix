@@ -8,7 +8,7 @@
     }:
     let
       ollama = pkgs.ollama-cpu; # CPU-only build, no GPU available
-      model = "smollm2:135m"; # tiny model, easier debugging
+      model = "smollm2:135m"; # tiny model (default of AI_CHAT_MODEL), easier debugging
       stateDir = "/var/lib/ai/chat";
       idleTimeout = "15min";
       startTimeout = "600"; # in seconds
@@ -35,7 +35,9 @@
           ollama
           (pkgs.writeShellScriptBin "ai-chat" ''
             export OLLAMA_HOST=${host}
-            exec ${ollama}/bin/ollama run ${model} "$@"
+            MODEL="''${AI_CHAT_MODEL:-${model}}"
+            ${ollama}/bin/ollama pull "$MODEL" # no-op if already stored
+            exec ${ollama}/bin/ollama run "$MODEL" "$@"
           '')
         ];
 
@@ -81,11 +83,10 @@
               ProtectHome = true;
             };
 
-            # keep unit in "activating" until the server is up and the model is available
+            # keep unit in "activating" until the server accepts requests
             postStart = ''
               for _ in $(seq 1 ${startTimeout}); do
                 if ${ollama}/bin/ollama list >/dev/null 2>&1; then
-                  ${ollama}/bin/ollama pull ${model}
                   exit 0
                 fi
                 sleep 1
