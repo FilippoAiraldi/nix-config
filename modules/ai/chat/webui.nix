@@ -20,9 +20,8 @@
             ENABLE_OPENAI_API = "False"; # only local models
             ENABLE_WEB_SEARCH = "True";
             WEB_SEARCH_ENGINE = "searxng";
-            WEB_SEARCH_RESULT_COUNT = "3";
             WEB_SEARCH_CONCURRENT_REQUESTS = "10";
-            SEARXNG_QUERY_URL = "http://127.0.0.1:${toString config.searxPort}/search";
+            SEARXNG_QUERY_URL = "http://127.0.0.1:${toString config.searxPort}/search?q=<query>";
             ANONYMIZED_TELEMETRY = "False";
             DO_NOT_TRACK = "True";
             SCARF_NO_ANALYTICS = "True";
