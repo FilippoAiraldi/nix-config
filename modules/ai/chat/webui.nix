@@ -18,9 +18,11 @@
           environment = {
             OLLAMA_BASE_URL = "http://127.0.0.1:${toString config.ai-chatPort}";
             ENABLE_OPENAI_API = "False"; # only local models
-            ENABLE_RAG_WEB_SEARCH = "True";
-            RAG_WEB_SEARCH_ENGINE = "searxng";
-            SEARXNG_QUERY_URL = "http://127.0.0.1:${toString config.searxPort}/search?q=<query>";
+            ENABLE_WEB_SEARCH = "True";
+            WEB_SEARCH_ENGINE = "searxng";
+            WEB_SEARCH_RESULT_COUNT = "3";
+            WEB_SEARCH_CONCURRENT_REQUESTS = "10";
+            SEARXNG_QUERY_URL = "http://127.0.0.1:${toString config.searxPort}/search";
             ANONYMIZED_TELEMETRY = "False";
             DO_NOT_TRACK = "True";
             SCARF_NO_ANALYTICS = "True";

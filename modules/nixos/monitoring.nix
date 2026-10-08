@@ -121,6 +121,7 @@
 
                   # direct localhost checks
                   (local "AI Chat" config.ai-chatPort)
+                  (local "AI Chat Open-WebUI" config.ai-chat-webuiPort)
                   (local "Grafana" config.grafanaPort)
                   (local "Pi-Hole Web" config.piholeWebPort)
                   (local "SearXNG" config.searxPort)
@@ -128,6 +129,7 @@
 
                   # end-to-end through Caddy
                   (viaCaddy "ai-chat")
+                  (viaCaddy "ai-chat-webui")
                   (viaCaddy "grafana")
                   (viaCaddy "pihole")
                   (viaCaddy "searxng")
