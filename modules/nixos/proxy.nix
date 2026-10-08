@@ -27,6 +27,7 @@
           virtualHosts =
             # entries here have all the same setup
             lib.mapAttrs' mkVirtualHost {
+              ai-chat-webui = config.ai-chat-webuiPort;
               ai-decisions = config.ai-decisionsPort;
               gatus = config.gatusPort;
               grafana = config.grafanaPort;

@@ -23,6 +23,7 @@ in
     imports = commonImports ++ [
       generic.localIPAddr
       nixos.ai-chat
+      nixos.ai-chat-webui
       nixos.ai-decisions
       nixos.bash
       nixos.boot

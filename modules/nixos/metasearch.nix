@@ -14,6 +14,10 @@
       config.services.searx = {
         enable = true;
         environmentFile = "/var/lib/secrets/searxng.env";
+        settings.search.formats = [
+          "html"
+          "json" # needed by Open-WebUI (see ai/chat/webui.nix)
+        ];
         settings.server = {
           bind_address = "127.0.0.1";
           port = config.searxPort;
