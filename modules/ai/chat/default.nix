@@ -9,7 +9,7 @@
     let
       idleTimeout = "30m";
       ollamaPkg = pkgs.ollama-cpu;
-      defaultModel = "smollm2:135m"; # tiny model (default of AI_CHAT_MODEL), easier debugging
+      defaultModel = "smollm2:135m";
     in
     {
       options."ai-chatPort" = lib.mkOption {
@@ -34,6 +34,8 @@
           (pkgs.writeShellScriptBin "ai-chat" ''
             export OLLAMA_HOST=127.0.0.1:${toString config."ai-chatPort"}
             MODEL="''${AI_CHAT_MODEL:-${defaultModel}}"
+            echo "Running $MODEL on $OLLAMA_HOST. Use AI_CHAT_MODEL to change the model."
+
             ${ollamaPkg}/bin/ollama pull "$MODEL" # no-op if already stored
             exec ${ollamaPkg}/bin/ollama run "$MODEL" "$@"  # $@ passes through additional args
           '')
