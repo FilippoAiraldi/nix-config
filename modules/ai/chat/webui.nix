@@ -9,6 +9,7 @@
       };
 
       # LibreChat server
+      # https://www.librechat.ai/docs/configuration/dotenv
       # https://www.librechat.ai/docs/configuration/librechat_yaml
       # https://www.librechat.ai/docs/features/web_search
       config = {
@@ -39,13 +40,14 @@
             webSearch = {
               searchProvider = "searxng";
               searxngInstanceUrl = "\${SEARXNG_INSTANCE_URL}";
-              searxngSearchOptions.engines = "google,bing,startpage";
               allowedAddresses = [ "127.0.0.1:${toString config.searxPort}" ];
               scraperProvider = "keenable";
               rerankerType = "none";
             };
           };
         };
+
+        nixpkgs.config.allowUnfreePackages = [ "mongodb" ];
       };
     };
 }
