@@ -16,7 +16,7 @@
         environmentFile = "/var/lib/secrets/searxng.env";
         settings.search.formats = [
           "html"
-          "json" # needed by Open-WebUI (see ai/chat/webui.nix)
+          "json" # needed by LibreChat web search (see ai/chat/webui.nix)
         ];
         settings.server = {
           bind_address = "127.0.0.1";

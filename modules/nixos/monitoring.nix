@@ -121,7 +121,7 @@
 
                   # direct localhost checks
                   (local "AI Chat" config.ai-chatPort)
-                  (local "AI Chat Open-WebUI" config.ai-chat-webuiPort)
+                  (local "AI Chat LibreChat" config.ai-chat-webuiPort)
                   (local "Grafana" config.grafanaPort)
                   (local "Pi-Hole Web" config.piholeWebPort)
                   (local "SearXNG" config.searxPort)

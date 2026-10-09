@@ -14,9 +14,11 @@ Local LLM chat running on `crappy-server` with [Ollama](https://ollama.com), CPU
 
 The model is `smollm2:135m` by default, a tiny model chosen to make debugging easier. Override it with the `AI_CHAT_MODEL` environment variable (any Ollama model id).
 
-## Open-WebUI
+## LibreChat
 
-`webui.nix` runs `services.open-webui` (at `https://ai-chat-webui.crappy-server.home`) on top of the Ollama server.
+`webui.nix` runs `services.librechat` at `https://ai-chat-webui.crappy-server.home`, using Ollama for chat and SearXNG for web search. Keenable provides keyless page scraping; reranking is disabled.
+
+LibreChat uses a local MongoDB database. Before starting the service, create `/var/lib/secrets/librechat.env` with `CREDS_KEY`, `CREDS_IV`, `JWT_SECRET`, and `JWT_REFRESH_SECRET` values. Generate unique values with `openssl rand -hex 32` for the keys and secrets, and `openssl rand -hex 16` for the IV. Keep this file private and outside the Nix store.
 
 ## Usage
 
