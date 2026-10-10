@@ -42,7 +42,7 @@ in
     ];
   };
 
-  flake.modules.nixos.desktop = {
+  flake.modules.nixos.private = {
     imports = commonImports ++ [
       nixos.bash
       nixos.boot
@@ -50,7 +50,6 @@ in
       nixos.nixvim
       nixos.packages
       nixos.users
-      nixos.xfce
     ];
   };
 

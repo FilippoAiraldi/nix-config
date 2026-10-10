@@ -1,15 +1,18 @@
-{ config, ... }:
+{ inputs, config, ... }:
 let
   inherit (config.flake.modules) nixos;
+  hostName = "tud-vm";
 in
 {
-  configurations.nixos.tud-vm.module = {
+  configurations.nixos.${hostName}.module = {
     imports = [
+      inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
-      nixos.desktop
+      nixos.private
+      nixos.xfce
     ];
 
-    hostName = "tud-vm";
+    inherit hostName;
     primaryUser = "fairaldi";
     system.stateVersion = "26.05";
 
