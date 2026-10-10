@@ -45,6 +45,7 @@ in
   flake.modules.nixos.desktop = {
     imports = commonImports ++ [
       nixos.bash
+      nixos.boot
       nixos.locale
       nixos.nixvim
       nixos.packages

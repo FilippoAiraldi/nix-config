@@ -15,10 +15,5 @@ in
 
     # just for enabling guest tools in the VM
     virtualisation.vmware.guest.enable = true;
-
-    boot.loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
   };
 }
