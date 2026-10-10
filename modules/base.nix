@@ -42,6 +42,17 @@ in
     ];
   };
 
+  flake.modules.nixos.desktop = {
+    imports = commonImports ++ [
+      nixos.bash
+      nixos.locale
+      nixos.nixvim
+      nixos.packages
+      nixos.users
+      nixos.xfce
+    ];
+  };
+
   flake.modules.nixos.wsl = {
     imports = commonImports ++ [
       nixos.bash
