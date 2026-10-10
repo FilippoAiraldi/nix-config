@@ -8,7 +8,7 @@
     }:
     let
       idleTimeout = "30m";
-      ollamaPkg = pkgs.ollama-cpu;
+      ollamaPkg = pkgs.ollama-vulkan;
       defaultModel = "smollm2:135m";
     in
     {
@@ -24,10 +24,13 @@
           package = ollamaPkg;
           port = config.ai-chatPort;
           environmentVariables = {
-            OLLAMA_LLM_LIBRARY = "cpu_avx2";
             OLLAMA_KEEP_ALIVE = idleTimeout;
+            OLLAMA_VULKAN = "1";
+            OLLAMA_DEBUG = "2";
+            VK_DRIVER_FILES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.json";
           };
         };
+        nixpkgs.config.allowUnfreePackages = [ "nvidia-kernel-modules" ];
 
         # convenience command to start chatting in a REPL
         environment.systemPackages = [
