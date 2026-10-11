@@ -10,6 +10,7 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 .
 ├── flake.nix            # Inputs; imports everything in modules/
 ├── justfile             # Common rebuild, update, and check commands
+├── assets/              # Images and other files
 └── modules/
     ├── ai/              # AI features (a Nix module plus the code it runs)
     ├── configurations/  # Instantiates hosts and generates system checks

@@ -26,18 +26,30 @@ in
       nixos.ai-chat-webui
       nixos.ai-decisions
       nixos.bash
-      nixos.boot
+      nixos.boot-server
       nixos.dns
       nixos.locale
       nixos.metasearch
       nixos.monitoring
       nixos.network-filesystem
-      nixos.networking
+      nixos.networking-server
       nixos.nixvim
       nixos.packages
       nixos.proxy
       nixos.power-cycle
       nixos.services
+      nixos.users
+    ];
+  };
+
+  flake.modules.nixos.private = {
+    imports = commonImports ++ [
+      nixos.bash
+      nixos.boot-desktop
+      nixos.locale
+      nixos.networking-desktop
+      nixos.nixvim
+      nixos.packages
       nixos.users
     ];
   };
