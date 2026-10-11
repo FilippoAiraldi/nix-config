@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.networking =
+  flake.modules.nixos.networking-server =
     { config, lib, ... }:
     {
       options.networkInterfaces = lib.mkOption {
