@@ -1,5 +1,12 @@
 {
-  flake.modules.nixos.networking =
+  flake.modules.nixos.networking-desktop =
+    { config, ... }:
+    {
+      networking.networkmanager.enable = true;
+      users.users.${config.primaryUser}.extraGroups = [ "networkmanager" ];
+    };
+
+  flake.modules.nixos.networking-server =
     { config, lib, ... }:
     {
       options.networkInterfaces = lib.mkOption {
