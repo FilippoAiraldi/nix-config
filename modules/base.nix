@@ -32,7 +32,7 @@ in
       nixos.metasearch
       nixos.monitoring
       nixos.network-filesystem
-      nixos.networking
+      nixos.networking-server
       nixos.nixvim
       nixos.packages
       nixos.proxy
@@ -47,6 +47,7 @@ in
       nixos.bash
       nixos.boot
       nixos.locale
+      nixos.networking-desktop
       nixos.nixvim
       nixos.packages
       nixos.users
