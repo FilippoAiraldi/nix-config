@@ -10,6 +10,7 @@
           limine = {
             enable = true;
             extraConfig = ''
+              terse: yes
               quiet: yes
             '';
             style = {

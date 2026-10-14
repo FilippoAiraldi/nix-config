@@ -6,11 +6,11 @@ in
 {
   configurations.nixos.${hostName}.module = {
     imports = [
-      inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
-      nixos.private
-      nixos.xfce
+      inputs.nixos-hardware.nixosModules.common-cpu-intel
+      nixos.display-manager
       nixos.mango
+      nixos.private
     ];
 
     inherit hostName;
