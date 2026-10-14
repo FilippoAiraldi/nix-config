@@ -10,6 +10,7 @@ in
       ./_hardware.nix
       nixos.private
       nixos.xfce
+      nixos.mango
     ];
 
     inherit hostName;
