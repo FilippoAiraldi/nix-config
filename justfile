@@ -31,6 +31,10 @@ flake-check:
     nix flake check
     @echo "Flake check complete."
 
+# Show the value and other fields of an option
+flake-option opt flake=flake:
+    nixos-option --flake {{flake}} {{opt}}
+
 # Format the repository
 fmt:
     nix fmt
