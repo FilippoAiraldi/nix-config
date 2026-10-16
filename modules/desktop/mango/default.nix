@@ -1,87 +1,47 @@
 # Mango Windows Manager
 # https://mangowm.github.io/docs
 # https://wiki.nixos.org/wiki/Mango
-{ inputs, config, ... }:
+# https://github.com/mangowm/mango/wiki
+{ config, inputs, ... }:
 let
-  hmModules = config.flake.modules.homeManager;
+  inherit (config.flake.modules) homeManager;
 in
 {
-  flake.modules.nixos.mango =
-    { pkgs, ... }:
-    {
-      imports = [ inputs.mangowm.nixosModules.mango ];
-      programs.mango.enable = true;
-      home-manager.sharedModules = [ hmModules.mango ];
-    };
+  flake.modules.nixos.mango = {
+    imports = [ inputs.mangowm.nixosModules.mango ];
+
+    programs.mango.enable = true;
+    home-manager.sharedModules = [ homeManager.mango ];
+  };
 
   flake.modules.homeManager.mango =
-    { pkgs, ... }:
     {
-      imports = [ inputs.mangowm.hmModules.mango ];
-
-      home.packages = with pkgs; [
-        foot
-        fuzzel
-        rofi
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    {
+      imports = [
+        inputs.mangowm.hmModules.mango
+        homeManager.application-launcher
+        homeManager.terminal-emulator
       ];
 
       wayland.windowManager.mango = {
         enable = true;
         settings = {
-          # Window effect
+          # disable window effects and animations
           blur = 0;
-          blur_layer = 0;
-          blur_optimized = 1;
-          blur_params_num_passes = 2;
-          blur_params_radius = 5;
-          blur_params_noise = "0.02";
-          blur_params_brightness = "0.9";
-          blur_params_contrast = "0.9";
-          blur_params_saturation = "1.2";
-
           shadows = 0;
-          layer_shadows = 0;
-          shadow_only_floating = 1;
-          shadows_size = 10;
-          shadows_blur = 15;
-          shadows_position_x = 0;
-          shadows_position_y = 0;
-          shadows_color = "0x000000ff";
+          animations = 0;
+          layer_animations = 0;
+          dim_enable = 0;
 
           border_radius = 6;
           no_radius_when_single = 0;
           focused_opacity = "1.0";
           unfocused_opacity = "1.0";
-
-          dim_enable = 0;
-          dim_focused_color = "0x00000000";
-          dim_unfocused_color = "0x00000055";
-
-          # Animation Configuration(support type:zoom,slide)
-          # tag_animation_direction: 1-horizontal,0-vertical
-          animations = 1;
-          layer_animations = 1;
-          animation_type_open = "slide";
-          animation_type_close = "slide";
-          animation_fade_in = 1;
-          animation_fade_out = 1;
-          tag_animation_direction = 1;
-          zoom_initial_ratio = "0.4";
-          zoom_end_ratio = "0.8";
-          fade_in_begin_opacity = "0.5";
-          fade_out_begin_opacity = "0.8";
-          animation_duration_move = 500;
-          animation_duration_open = 400;
-          animation_duration_tag = 350;
-          animation_duration_close = 800;
-          animation_duration_focus = 0;
-          animation_curve_open = "0.46,1.0,0.29,1";
-          animation_curve_move = "0.46,1.0,0.29,1";
-          animation_curve_tag = "0.46,1.0,0.29,1";
-          animation_curve_close = "0.08,0.92,0,1";
-          animation_curve_focus = "0.46,1.0,0.29,1";
-          animation_curve_opacity_fade_out = "0.5,0.5,0.5,0.5";
-          animation_curve_opacity_fade_in = "0.46,1.0,0.29,1";
 
           # Scroller Layout Setting
           scroller_structs = 20;
@@ -183,58 +143,42 @@ in
           global_color = "0xb153a7ff";
           overlay_color = "0x14a57cff";
 
-          # layout support:
-          # tile,scroller,grid,deck,monocle,center_tile,vertical_tile,vertical_scroller
+          exec_once =
+            # allows copy and paste from/to the virtual machine (ctrl+shift+c and v)
+            let
+              clipBridge = pkgs.writeShellScript "clip-bridge" ''
+                export PATH=${
+                  lib.makeBinPath [
+                    pkgs.wl-clipboard
+                    pkgs.xclip
+                    pkgs.clipnotify
+                    pkgs.coreutils
+                  ]
+                }:$PATH
 
-          # Key Bindings
-          # key name refer to `xev` or `wev` command output,
-          # mod keys name: super,ctrl,alt,shift,none
+                # wayland to x11
+                wl-paste --watch sh -c '
+                  new=$(cat)
+                  [ "$new" = "$(xclip -o -selection clipboard -t UTF8_STRING 2>/dev/null)" ] && exit 0
+                  printf "%s" "$new" | xclip -selection clipboard -i -t UTF8_STRING
+                ' &
 
-          # reload config
-
-          # menu and terminal
-
-          # exit
-
-          # switch window focus
-
-          # move window
-
-          # switch window status
-
-          # scroller layout
-
-          # dwindle layout(manual split mode)
-
-          # switch layout
-
-          # tag switch
-
-          # tag: move client to the tag and focus it
-          # tagsilent: move client to the tag and not focus it
-          # bind=Alt,1,tagsilent,1
-
-          # monitor switch
-
-          # gaps
-
-          # movewin
-
-          # resizewin
-
-          # Mouse Button Bindings
-          # btn_left and btn_right can't bind none mod key
-
-          # Axis Bindings
-
-          # Gesture Bindings
-
-          # layer rule
+                # x11 to wayland
+                while clipnotify -s clipboard; do
+                  new=$(xclip -o -selection clipboard -t UTF8_STRING 2>/dev/null) || continue
+                  [ "$new" = "$(wl-paste -n 2>/dev/null)" ] && continue
+                  printf '%s' "$new" | wl-copy
+                done
+              '';
+            in
+            [
+              "${clipBridge}"
+              "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr"
+            ];
 
           bind = [
-            "SUPER,r,reload_config"
-            "Alt,space,spawn,rofi -show drun"
-            "Alt,Return,spawn,foot"
+            "ALT,SPACE,spawn,${config.mango.appLauncherCmd}"
+            "ALT,RETURN,spawn,${config.mango.terminalCmd}"
             "SUPER,m,quit"
             "ALT,q,killclient,"
             "SUPER,Tab,focusstack,next"
@@ -337,11 +281,6 @@ in
             "none,left,4,viewnext_have_client"
             "none,up,4,enteroverview"
             "none,down,4,leaveoverview"
-          ];
-
-          layer_rule = [
-            "animation_type_open:zoom,layer_name:rofi"
-            "animation_type_close:zoom,layer_name:rofi"
           ];
         };
       };
