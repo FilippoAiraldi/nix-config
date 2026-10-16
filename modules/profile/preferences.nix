@@ -29,14 +29,16 @@
         appearance = {
           fonts = {
             monospace = {
-              family = "JetBrainsMono Nerd Font";
+              name = "JetBrainsMono Nerd Font";
               package = pkgs.nerd-fonts.jetbrains-mono;
-              size = 11;
             };
-            ui = {
-              family = "Inter";
+            sansSerif = {
+              name = "Inter";
               package = pkgs.inter;
-              size = 11;
+            };
+            sizes = {
+              applications = 12;
+              desktop = 12;
             };
           };
         };

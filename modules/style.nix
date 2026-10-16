@@ -1,0 +1,41 @@
+{ inputs, ... }:
+{
+  flake.modules.nixos.style =
+    { config, pkgs, ... }:
+    let
+      inherit (config.profile.appearance.fonts) monospace sansSerif sizes;
+    in
+    {
+      imports = [ inputs.stylix.nixosModules.stylix ];
+
+      stylix = {
+        enable = true;
+
+        # theme and fonts
+        base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+        fonts = {
+          monospace = {
+            package = monospace.package;
+            name = monospace.name;
+          };
+          sansSerif = {
+            package = sansSerif.package;
+            name = sansSerif.name;
+          };
+          sizes = {
+            applications = sizes.applications;
+            desktop = sizes.desktop;
+          };
+        };
+
+        # wallpaper
+        image = pkgs.fetchurl {
+          url = "https://raw.githubusercontent.com/orangci/walls-catppuccin-mocha/7bfdf10d16ad3a689f9f0cf3a0930da3d1a245a8/storm.jpg";
+          hash = "sha256-g1bjruWWBjFzhVskgqhW+mtgv3BN8azgvULKDONM4WQ=";
+        };
+
+        # per-target options
+        targets.plymouth.enable = false;
+      };
+    };
+}

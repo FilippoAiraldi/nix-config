@@ -30,10 +30,10 @@ in
   };
 
   flake.modules.nixos.private-desktop.imports = [
-    nixos.fonts
     nixos.private
     nixos.boot-desktop
     nixos.networking-desktop
+    nixos.style
   ];
 
   flake.modules.nixos.server.imports = [

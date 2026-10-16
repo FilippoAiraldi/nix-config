@@ -1,9 +1,5 @@
 # Fuzzel
 # https://man.archlinux.org/man/fuzzel.ini.5.en
-{ config, ... }:
-let
-  inherit (config.theme) colorFmt colors;
-in
 {
   flake.modules.homeManager.application-launcher =
     {
@@ -21,7 +17,6 @@ in
       config =
         let
           pkg = pkgs.fuzzel;
-          inherit (config.profile.appearance.fonts) monospace;
         in
         {
           mango.appLauncherCmd = lib.getExe pkg;
@@ -32,21 +27,15 @@ in
             settings = {
               border.width = 2;
               colors = {
-                background = colorFmt.rgba colors.ink-black "cc";
-                border = colorFmt.rgba colors.baby-blue-ice "ff";
-                selection = colorFmt.rgba colors.space-indigo "cc";
-                text = colorFmt.rgba colors.lavender "ff";
-                selection-text = colorFmt.rgba colors.lavender "ff";
+                background = lib.mkForce "${config.lib.stylix.colors.base00}cc";
+                selection = lib.mkForce "${config.lib.stylix.colors.base02}cc";
               };
               key-bindings = {
                 delete-line-forward = "none";
                 next = "Down Control+j";
                 prev = "Up Control+k";
               };
-              main = {
-                font = "${monospace.family}:size=${toString monospace.size}";
-                use-bold = "yes";
-              };
+              main.use-bold = "yes";
             };
           };
         };

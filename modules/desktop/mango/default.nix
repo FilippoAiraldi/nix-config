@@ -144,7 +144,6 @@ in
           overlay_color = "0x14a57cff";
 
           exec_once =
-            # allows copy and paste from/to the virtual machine (ctrl+shift+c and v)
             let
               clipBridge = pkgs.writeShellScript "clip-bridge" ''
                 export PATH=${
@@ -172,8 +171,9 @@ in
               '';
             in
             [
-              "${clipBridge}"
-              "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr"
+              "${clipBridge}" # TODO: remove outside a VM
+              "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr" # TODO: remove outside a VM
+              "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill"
             ];
 
           bind = [
