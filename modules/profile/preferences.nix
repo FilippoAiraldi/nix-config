@@ -1,6 +1,6 @@
 {
   flake.modules.generic.profile =
-    { lib, ... }:
+    { lib, pkgs, ... }:
     {
       options.profile = lib.mkOption {
         readOnly = true;
@@ -24,6 +24,20 @@
             LC_PAPER = "en_IE.UTF-8";
             LC_TELEPHONE = "en_IE.UTF-8";
             LC_TIME = "en_IE.UTF-8";
+          };
+        };
+        appearance = {
+          fonts = {
+            monospace = {
+              family = "JetBrainsMono Nerd Font";
+              package = pkgs.nerd-fonts.jetbrains-mono;
+              size = 11;
+            };
+            ui = {
+              family = "Inter";
+              package = pkgs.inter;
+              size = 11;
+            };
           };
         };
       };
