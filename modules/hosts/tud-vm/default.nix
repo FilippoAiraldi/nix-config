@@ -19,5 +19,6 @@ in
 
     # just for enabling guest tools in the VM
     virtualisation.vmware.guest.enable = true;
+    environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
   };
 }
