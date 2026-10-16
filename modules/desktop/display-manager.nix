@@ -1,34 +1,20 @@
+# SDDM + astronaut theme
+# https://wiki.nixos.org/wiki/SDDM
+# https://github.com/Keyitdev/sddm-astronaut-theme
 {
   flake.modules.nixos.display-manager =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
+    let
+      sddm-astronaut = pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; };
+    in
     {
-      # greetd (login manager) + tuigreet (greeter)
-      # https://wiki.nixos.org/wiki/Greetd
-      # https://ryjelsum.me/homelab/greetd-session-choose
-      # https://man.sr.ht/~kennylevinsen/greetd
-      services.greetd = {
+      environment.systemPackages = [ sddm-astronaut ];
+
+      services.displayManager.sddm = {
         enable = true;
-        useTextGreeter = true;
-        settings.default_session = {
-          command = builtins.concatStringsSep " " [
-            "${pkgs.tuigreet}/bin/tuigreet"
-            "--battery"
-            "--remember"
-            "--remember-session"
-            "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions"
-            "--theme \"${
-              builtins.concatStringsSep ";" [
-                "border=magenta"
-                "prompt=magenta"
-                "text=magenta"
-              ]
-            }\""
-            "--time"
-            "--title"
-            "--user-menu"
-          ];
-          user = "greeter";
-        };
+        wayland.enable = true;
+        theme = "sddm-astronaut-theme";
+        extraPackages = [ pkgs.kdePackages.qtmultimedia ];
       };
     };
 }
