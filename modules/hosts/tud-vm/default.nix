@@ -6,10 +6,11 @@ in
 {
   configurations.nixos.${hostName}.module = {
     imports = [
-      inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
+      inputs.nixos-hardware.nixosModules.common-cpu-intel
+      nixos.display-manager
+      nixos.mango
       nixos.private
-      nixos.xfce
     ];
 
     inherit hostName;
@@ -18,5 +19,6 @@ in
 
     # just for enabling guest tools in the VM
     virtualisation.vmware.guest.enable = true;
+    environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
   };
 }

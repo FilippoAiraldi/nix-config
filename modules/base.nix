@@ -50,6 +50,7 @@ in
       nixos.networking-desktop
       nixos.nixvim
       nixos.packages
+      nixos.style
       nixos.users
     ];
   };

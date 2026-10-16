@@ -10,13 +10,10 @@
           limine = {
             enable = true;
             extraConfig = ''
+              terse: yes
               quiet: yes
             '';
-            style = {
-              interface.branding = "NixOS";
-              wallpapers = [ ../../assets/omarchy_osakajade_1-glowing-city.jpg ];
-              wallpaperStyle = "centered";
-            };
+            style.interface.branding = "NixOS";
           };
         };
 
