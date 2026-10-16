@@ -46,11 +46,11 @@ in
     imports = commonImports ++ [
       nixos.bash
       nixos.boot-desktop
-      nixos.fonts
       nixos.locale
       nixos.networking-desktop
       nixos.nixvim
       nixos.packages
+      nixos.style
       nixos.users
     ];
   };
