@@ -4,7 +4,7 @@
   flake.modules.homeManager.terminal-emulator =
     { lib, pkgs, ... }:
     {
-      options.mango.terminalCmd = lib.mkOption {
+      options.desktop.terminalCmd = lib.mkOption {
         type = lib.types.str;
         description = "Command that opens the terminal";
       };
@@ -14,7 +14,7 @@
           pkg = pkgs.foot;
         in
         {
-          mango.terminalCmd = lib.getExe pkg;
+          desktop.terminalCmd = lib.getExe pkg;
 
           programs.foot = {
             enable = true;

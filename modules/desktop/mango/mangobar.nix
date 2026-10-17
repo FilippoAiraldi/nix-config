@@ -3,7 +3,7 @@
 # https://github.com/mangowm/mangobar/wiki
 { inputs, ... }:
 {
-  flake.modules.homeManager.status-bar = {
+  flake.modules.homeManager.mangobar = {
     imports = [ inputs.mangobar.homeManagerModules.default ];
 
     services.mangobar = {
