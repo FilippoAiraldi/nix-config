@@ -25,9 +25,10 @@ in
     }:
     {
       imports = [
-        inputs.mangowm.hmModules.mango
         homeManager.application-launcher
+        homeManager.status-bar
         homeManager.terminal-emulator
+        inputs.mangowm.hmModules.mango
       ];
 
       wayland.windowManager.mango =
