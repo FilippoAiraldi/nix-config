@@ -4,7 +4,7 @@
     {
       boot = {
         loader = {
-          timeout = 0;
+          timeout = 3;
           efi.canTouchEfiVariables = false; # `true` conflicts with limine being attempted to be re-registered as a EFI entry
 
           limine = {
