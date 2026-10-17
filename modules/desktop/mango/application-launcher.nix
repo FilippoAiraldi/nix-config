@@ -16,6 +16,7 @@
 
       config =
         let
+          inherit (config.profile.appearance) border;
           pkg = pkgs.fuzzel;
         in
         {
@@ -25,7 +26,10 @@
             enable = true;
             package = pkg;
             settings = {
-              border.width = 2;
+              border = {
+                radius = border.radius;
+                width = border.width;
+              };
               colors = {
                 background = lib.mkForce "${config.lib.stylix.colors.base00}cc";
                 selection = lib.mkForce "${config.lib.stylix.colors.base02}cc";
