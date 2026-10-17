@@ -25,9 +25,7 @@ in
     }:
     {
       imports = [
-        homeManager.application-launcher
-        homeManager.status-bar
-        homeManager.terminal-emulator
+        homeManager.mangobar
         inputs.mangowm.hmModules.mango
       ];
 
@@ -148,8 +146,8 @@ in
             # keyboard shortcuts
             bind = [
               "super,r,reload_config" # reload configuration
-              "alt,space,spawn,${config.mango.appLauncherCmd}" # menu
-              "alt,return,spawn,${config.mango.terminalCmd}" # terminal
+              "alt,space,spawn,${config.desktop.appLauncherCmd}" # menu
+              "alt,return,spawn,${config.desktop.terminalCmd}" # terminal
               "super,m,quit" # quit to display-manager
               "alt,q,killclient," # close window
 

@@ -8,6 +8,7 @@ in
     imports = [
       ./_hardware.nix
       inputs.nixos-hardware.nixosModules.common-cpu-intel
+      nixos.desktop
       nixos.display-manager
       nixos.mango
       nixos.private

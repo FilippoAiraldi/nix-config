@@ -9,7 +9,7 @@
       ...
     }:
     {
-      options.mango.appLauncherCmd = lib.mkOption {
+      options.desktop.appLauncherCmd = lib.mkOption {
         type = lib.types.str;
         description = "Command to spawn the app launcher (e.g., `rofi -show drun`)";
       };
@@ -20,7 +20,7 @@
           pkg = pkgs.fuzzel;
         in
         {
-          mango.appLauncherCmd = lib.getExe pkg;
+          desktop.appLauncherCmd = lib.getExe pkg;
 
           programs.fuzzel = {
             enable = true;
