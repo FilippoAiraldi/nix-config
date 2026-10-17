@@ -1,4 +1,7 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
+let
+  inherit (config.flake.modules) homeManager;
+in
 {
   flake.modules.nixos.style =
     { config, pkgs, ... }:
@@ -7,6 +10,7 @@
     in
     {
       imports = [ inputs.stylix.nixosModules.stylix ];
+      home-manager.sharedModules = [ homeManager.style ];
 
       stylix = {
         enable = true;
@@ -34,8 +38,12 @@
           hash = "sha256-g1bjruWWBjFzhVskgqhW+mtgv3BN8azgvULKDONM4WQ=";
         };
 
-        # per-target options
+        # system-level per-target options
         targets.plymouth.enable = false;
       };
     };
+  flake.modules.homeManager.style = {
+    # HomeManager-level per-target options
+    stylix.targets.rofi.enable = false;
+  };
 }

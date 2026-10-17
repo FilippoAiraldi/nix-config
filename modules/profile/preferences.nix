@@ -27,6 +27,10 @@
           };
         };
         appearance = {
+          border = {
+            radius = 3;
+            width = 3;
+          };
           fonts = {
             monospace = {
               name = "JetBrainsMono Nerd Font";
