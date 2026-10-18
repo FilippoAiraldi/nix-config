@@ -12,6 +12,7 @@
         fd
         gnumake
         htop
+        jq
         just
         nixfmt
         ripgrep

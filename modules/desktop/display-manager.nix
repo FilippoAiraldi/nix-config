@@ -5,7 +5,13 @@
   flake.modules.nixos.display-manager =
     { pkgs, ... }:
     let
-      sddm-astronaut = pkgs.sddm-astronaut.override { embeddedTheme = "pixel_sakura"; };
+      sddm-astronaut = pkgs.sddm-astronaut.override {
+        embeddedTheme = "pixel_sakura";
+        themeConfig = {
+          SessionButtonTextColor = "#2b3340";
+          HoverSessionButtonTextColor = "#4a5965";
+        };
+      };
     in
     {
       environment.systemPackages = [ sddm-astronaut ];

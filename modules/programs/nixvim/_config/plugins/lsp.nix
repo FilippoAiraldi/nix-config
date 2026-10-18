@@ -62,7 +62,7 @@
 
     servers.nixd = {
       enable = true;
-      settings.formatting.command = "${lib.getExe pkgs.nixfmt}";
+      settings.formatting.command = [ "${lib.getExe pkgs.nixfmt}" ];
     };
   };
 }

@@ -9,20 +9,29 @@
       ...
     }:
     {
-      options.desktop.appLauncherCmd = lib.mkOption {
-        type = lib.types.str;
-        description = "Command to spawn the app launcher (e.g., `rofi -show drun`)";
+      options.desktop = {
+        appLauncherName = lib.mkOption {
+          type = lib.types.str;
+          description = "Name of the app launcher (e.g., `rofi`)";
+        };
+        appLauncherCmd = lib.mkOption {
+          type = lib.types.str;
+          description = "Command to spawn the app launcher (e.g., `rofi -show drun`)";
+        };
       };
-
       config =
         let
           inherit (config.profile.appearance) border;
-          pkg = pkgs.fuzzel;
+          appLauncherName = "fuzzel";
+          pkg = pkgs.${appLauncherName};
         in
         {
-          desktop.appLauncherCmd = lib.getExe pkg;
+          desktop = {
+            appLauncherCmd = lib.getExe pkg;
+            appLauncherName = appLauncherName;
+          };
 
-          programs.fuzzel = {
+          programs.${appLauncherName} = {
             enable = true;
             package = pkg;
             settings = {
