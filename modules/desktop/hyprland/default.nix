@@ -24,7 +24,10 @@ in
       ...
     }:
     {
-      imports = [ homeManager.hyprexpo ];
+      imports = [
+        homeManager.hypr-ecosystem
+        homeManager.hyprexpo
+      ];
 
       wayland.windowManager.hyprland =
         let
