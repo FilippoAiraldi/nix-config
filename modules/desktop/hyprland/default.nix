@@ -24,6 +24,8 @@ in
       ...
     }:
     {
+      imports = [ homeManager.hyprexpo ];
+
       wayland.windowManager.hyprland =
         let
           lua = lib.generators.mkLuaInline;
@@ -309,7 +311,6 @@ in
                 scale = 1.5;
                 action = "fullscreen";
               }
-              # TODO: hyprexpo for 4-finger gestures
             ];
 
             # # default layout for each tag
