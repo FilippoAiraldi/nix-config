@@ -10,6 +10,7 @@ in
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       nixos.desktop
       nixos.display-manager
+      nixos.hyprland
       nixos.mango
       nixos.private
     ];
