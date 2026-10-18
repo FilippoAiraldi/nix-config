@@ -257,6 +257,22 @@
         "type": "github"
       }
     },
+    "hyprexpo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791959707,
+        "narHash": "sha256-tS4mNZn6JakTIY1PDfL50csXsiljqA8mc9TZppUrFxk=",
+        "owner": "sandwichfarm",
+        "repo": "hyprexpo",
+        "rev": "e3197bf420640453d0f6eba46fece7989776cbcb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sandwichfarm",
+        "repo": "hyprexpo",
+        "type": "github"
+      }
+    },
     "import-tree": {
       "locked": {
         "lastModified": 1788467110,
@@ -452,6 +468,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
+        "hyprexpo": "hyprexpo",
         "import-tree": "import-tree",
         "mangobar": "mangobar",
         "mangowm": "mangowm",
