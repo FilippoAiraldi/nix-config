@@ -19,5 +19,7 @@
         # hyprpicker # https://github.com/hyprwm/hyprpicker (TODO: broken in the VM)
         # hyprshutdown # https://github.com/hyprwm/hyprpicker (TODO: broken in the VM)
       ];
+      # home.packages ++ hyprpicker # https://github.com/hyprwm/hyprpicker
+      # services.hyprpaper.enable = true;  # NOTE: crashes; switched to swaybg
     };
 }
