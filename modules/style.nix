@@ -54,6 +54,7 @@ in
       hyprland.hyprpaper.enable = false; # NOTE: crashes; use swaybg instead
       hyprpaper.enable = false;
       rofi.enable = false;
+      waybar.enable = false;  # done manually
     };
   };
 }

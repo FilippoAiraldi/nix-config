@@ -17,6 +17,7 @@
         nixfmt
         ripgrep
         wget
+        wl-clipboard
         xclip
         zellij
       ];
