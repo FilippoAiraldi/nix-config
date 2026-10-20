@@ -42,8 +42,13 @@ in
         targets.plymouth.enable = false;
       };
     };
+
   flake.modules.homeManager.style = {
     # HomeManager-level per-target options
-    stylix.targets.rofi.enable = false;
+    stylix.targets = {
+      hyprland.hyprpaper.enable = false; # NOTE: crashes; use swaybg instead
+      hyprpaper.enable = false;
+      rofi.enable = false;
+    };
   };
 }
