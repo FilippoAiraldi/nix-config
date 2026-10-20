@@ -6,9 +6,13 @@ let
 in
 {
   flake.modules.nixos.hyprland =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
+      home-manager.extraSpecialArgs = {
+        hostName = config.hostName;
+      };
       home-manager.sharedModules = [ homeManager.hyprland ];
+
       programs.hyprland = {
         enable = true;
         withUWSM = true;
@@ -18,6 +22,7 @@ in
 
   flake.modules.homeManager.hyprland =
     {
+      hostName,
       config,
       lib,
       pkgs,
@@ -60,6 +65,7 @@ in
             }
           ];
 
+          isVM = lib.hasSuffix "vm" (lib.toLower hostName);
           clipBridge = pkgs.writeShellScript "clip-bridge" ''
             export PATH=${
               lib.makeBinPath [
@@ -85,10 +91,14 @@ in
             done
           '';
           startupCmds = [
-            "${clipBridge}" # TODO: remove outside a VM
-            "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr" # TODO: remove outside a VM
             "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill"
+          ]
+          ++ lib.optionals isVM [
+            "${clipBridge}"
+            "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr"
           ];
+          shutdownCmd =
+            if isVM then "hl.dsp.exit()" else "hl.dsp.exec_cmd('${lib.getExe pkgs.hyprshutdown}')";
         in
         {
           enable = true;
@@ -164,7 +174,7 @@ in
                 ]
                 [
                   (lua "mod .. ' + M'") # elegant quit
-                  (lua "hl.dsp.exec_cmd(\"command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'\")")
+                  (lua shutdownCmd)
                 ]
                 [
                   "ALT + Q" # close window
