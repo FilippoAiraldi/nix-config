@@ -2,22 +2,25 @@
 # https://wiki.hypr.land/Hypr-Ecosystem
 {
   flake.modules.homeManager.hypr-ecosystem =
-    { pkgs, ... }:
+    { config, pkgs, ... }:
     {
       # Hyprcursor
       # https://github.com/hyprwm/hyprcursor
-      # https://github.com/ndom91/rose-pine-hyprcursor
-      home.pointerCursor = {
-        enable = true;
-        name = "rose-pine-hyprcursor";
-        package = pkgs.rose-pine-hyprcursor;
-        size = 24;
-        hyprcursor.enable = true;
-      };
-
-      home.packages = with pkgs; [
-        # hyprpicker # https://github.com/hyprwm/hyprpicker (TODO: broken in the VM)
-        # hyprshutdown # https://github.com/hyprwm/hyprpicker (TODO: broken in the VM)
+      # https://github.com/ndom91/rose-pine-hyprcursor (NOTE: same theme as Stylix)
+      home.packages = [ pkgs.rose-pine-hyprcursor ];
+      wayland.windowManager.hyprland.settings.env = [
+        {
+          _args = [
+            "HYPRCURSOR_THEME"
+            "rose-pine-hyprcursor"
+          ];
+        }
+        {
+          _args = [
+            "HYPRCURSOR_SIZE"
+            (toString config.stylix.cursor.size)
+          ];
+        }
       ];
       # home.packages ++ hyprpicker # https://github.com/hyprwm/hyprpicker
       # services.hyprpaper.enable = true;  # NOTE: crashes; switched to swaybg
