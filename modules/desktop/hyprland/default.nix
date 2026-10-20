@@ -32,6 +32,7 @@ in
       imports = [
         homeManager.hypr-ecosystem
         homeManager.hyprexpo
+        homeManager.waybar
       ];
 
       wayland.windowManager.hyprland =
@@ -121,6 +122,8 @@ in
                 shadow.enabled = false;
               };
               input = {
+                kb_layout = "us,it";
+                kb_options = "grp:win_space_toggle";
                 repeat_delay = 500;
                 touchpad.middle_button_emulation = true;
               };
@@ -325,61 +328,6 @@ in
                 action = "fullscreen";
               }
             ];
-
-            # # default layout for each tag
-            # tag_rule = [
-            #   "id:1,layout_name:tile"
-            #   "id:2,layout_name:tile"
-            #   "id:3,layout_name:tile"
-            #   "id:4,layout_name:tile"
-            #   "id:5,layout_name:tile"
-            #   "id:6,layout_name:tile"
-            #   "id:7,layout_name:tile"
-            #   "id:8,layout_name:tile"
-            #   "id:9,layout_name:tile"
-            # ];
-
-            # # keyboard shortcuts
-            # bind = [
-            #   # switch window status
-            #   "super,g,toggleglobal,"
-            #   "alt,tab,togglejump,"
-            #   "alt,backslash,togglefloating,"
-            #   "alt,a,togglemaximizescreen,"
-            #   "alt,f,togglefullscreen,"
-            #   "alt+shift,f,togglefakefullscreen,"
-            #   "super,i,minimized,"
-            #   "super+shift,I,restore_minimized"
-            #   "super,o,toggleoverlay,"
-
-            #   # tag switch
-            #   "super,left,viewtoleft,0"
-            #   "super,right,viewtoright,0"
-            #   "ctrl,left,viewtoleft_have_client,0" # skips empty tags
-            #   "ctrl,right,viewtoright_have_client,0"
-            #   "ctrl+super,left,tagtoleft,0" # move window to another tag
-            #   "ctrl+super,right,tagtoright,0"
-            #   "ctrl,1,view,1,0"
-            #   "ctrl,2,view,2,0"
-            #   "ctrl,3,view,3,0"
-            #   "ctrl,4,view,4,0"
-            #   "ctrl,5,view,5,0"
-            #   "ctrl,6,view,6,0"
-            #   "ctrl,7,view,7,0"
-            #   "ctrl,8,view,8,0"
-            #   "ctrl,9,view,9,0"
-
-            #   # move client to tag and focus it
-            #   "alt,1,tag,1,0"
-            #   "alt,2,tag,2,0"
-            #   "alt,3,tag,3,0"
-            #   "alt,4,tag,4,0"
-            #   "alt,5,tag,5,0"
-            #   "alt,6,tag,6,0"
-            #   "alt,7,tag,7,0"
-            #   "alt,8,tag,8,0"
-            #   "alt,9,tag,9,0"
-            # ];
           };
         };
     };
