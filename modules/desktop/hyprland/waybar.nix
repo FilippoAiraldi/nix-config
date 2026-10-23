@@ -121,12 +121,20 @@
               format-it = "IT";
               keyboard-name = "at-translated-set-2-keyboard";
             };
+            "hyprland/workspaces" = {
+              format = "{name} {windows}";
+              on-click = "activate";
+              window-rewrite-default = "";
+              window-rewrite = {
+                "class<(firefox|librewolf)>" = "󰈹";
+                foot = "";
+              };
+            };
             memory = {
               format = "{used:0.1f}/{total:0.0f}GiB";
               format-alt = "{percentage}% ";
               tooltip-format = "{used:0.1f}GiB used\n{avail:0.1f}GiB avail\n{total:0.1f}GiB total\n{swapUsed:0.1f}GiB swap used\n{swapAvail:0.1f}GiB swap avail\n{swapTotal:0.1f}GiB swap total";
             };
-
             network = {
               interval = 5;
               format-wifi = "{icon}";
@@ -144,33 +152,6 @@
               tooltip-format-ethernet = "󰀂  {ifname}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
               tooltip-format-disconnected = "Disconnected";
               # on-click = "nm-connection-editor"; # TODO: install connection editor
-            };
-
-            "hyprland/workspaces" = {
-              format = "{icon}";
-              format-icons = {
-                # "1" = "○";
-                # "2" = "○";
-                # "3" = "○";
-                # "4" = "○";
-                # "5" = "○";
-                # active = "●";
-                "1" = "";
-                "2" = "";
-                "3" = "";
-                "4" = "";
-                "5" = "";
-                active = "";
-                "6" = "6";
-                "7" = "7";
-                "8" = "8";
-                "9" = "9";
-                urgent = "◆";
-              };
-              on-click = "activate";
-              persistent-workspaces = {
-                "*" = 5;
-              };
             };
           };
         };
