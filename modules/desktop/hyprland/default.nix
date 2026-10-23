@@ -2,22 +2,27 @@
 # https://wiki.nixos.org/wiki/Hyprland
 { config, ... }:
 let
-  inherit (config.flake.modules) homeManager;
+  inherit (config.flake.modules) homeManager nixos;
 in
 {
   flake.modules.nixos.hyprland =
     { config, pkgs, ... }:
     {
-      home-manager.extraSpecialArgs = {
-        hostName = config.hostName;
-      };
-      home-manager.sharedModules = [ homeManager.hyprland ];
+      imports = [
+        nixos.lock-screen
+      ];
 
+      environment.systemPackages = with pkgs; [ wlr-randr ];
       programs.hyprland = {
         enable = true;
         withUWSM = true;
       };
-      environment.systemPackages = with pkgs; [ wlr-randr ];
+
+      # load homeManager.hyprland with a special arg `hostName`
+      home-manager.extraSpecialArgs = {
+        hostName = config.hostName;
+      };
+      home-manager.sharedModules = [ homeManager.hyprland ];
     };
 
   flake.modules.homeManager.hyprland =
@@ -30,9 +35,9 @@ in
     }:
     {
       imports = [
-        homeManager.hypr-ecosystem
+        homeManager.cursor
         homeManager.hyprexpo
-        homeManager.waybar
+        homeManager.status-bar
       ];
 
       wayland.windowManager.hyprland =
@@ -178,6 +183,10 @@ in
                 [
                   (lua "mod .. ' + M'") # elegant quit
                   (lua shutdownCmd)
+                ]
+                [
+                  (lua "mod .. ' + L'") # lock scren
+                  (lua "hl.dsp.exec_cmd('${config.desktop.lockScreenCmd}')")
                 ]
                 [
                   "ALT + Q" # close window
