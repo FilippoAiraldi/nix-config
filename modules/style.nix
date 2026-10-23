@@ -55,6 +55,7 @@ in
       hyprpaper.enable = false;
       rofi.enable = false;
       waybar.enable = false; # done manually
+      hyprlock.enable = false;
     };
   };
 }

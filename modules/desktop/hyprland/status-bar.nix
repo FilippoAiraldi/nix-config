@@ -3,7 +3,7 @@
 # https://github.com/Alexays/Waybar/wiki
 # https://www.nerdfonts.com/cheat-sheet
 {
-  flake.modules.homeManager.waybar =
+  flake.modules.homeManager.status-bar =
     {
       config,
       lib,
@@ -81,7 +81,7 @@
               format = "󰍁";
               tooltip = true;
               tooltip-format = "Lock";
-              # on-click = "hyprlock"; # TODO: install hyprlock
+              on-click = config.desktop.lockScreenCmd;
             };
             "custom/power" = {
               format = "";

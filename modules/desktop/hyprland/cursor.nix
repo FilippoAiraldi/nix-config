@@ -1,12 +1,10 @@
-# Hypr Ecosystem
-# https://wiki.hypr.land/Hypr-Ecosystem
+# Hyprcursor
+# https://github.com/hyprwm/hyprcursor
+# https://github.com/ndom91/rose-pine-hyprcursor (NOTE: same theme as Stylix)
 {
-  flake.modules.homeManager.hypr-ecosystem =
+  flake.modules.homeManager.cursor =
     { config, pkgs, ... }:
     {
-      # Hyprcursor
-      # https://github.com/hyprwm/hyprcursor
-      # https://github.com/ndom91/rose-pine-hyprcursor (NOTE: same theme as Stylix)
       home.packages = [ pkgs.rose-pine-hyprcursor ];
       wayland.windowManager.hyprland.settings.env = [
         {
@@ -22,7 +20,5 @@
           ];
         }
       ];
-      # home.packages ++ hyprpicker # https://github.com/hyprwm/hyprpicker
-      # services.hyprpaper.enable = true;  # NOTE: crashes; switched to swaybg
     };
 }
