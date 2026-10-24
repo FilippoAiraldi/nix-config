@@ -16,6 +16,7 @@ in
     ];
 
     inherit hostName;
+    isVM = true;
     primaryUser = "fairaldi";
     system.stateVersion = "26.05";
 

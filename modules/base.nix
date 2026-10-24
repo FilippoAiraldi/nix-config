@@ -4,6 +4,8 @@ let
   commonImports = [
     generic.homeManagerIntegration
     generic.hostName
+    generic.isVM
+    generic.nixosHomeEnv
     generic.nixSettings
     generic.primaryUser
     generic.primaryUserHome
@@ -11,6 +13,10 @@ let
   ];
 in
 {
+  flake.modules.generic.nixosHomeEnv = {
+    environment.variables.NIXOS_HOME = "/etc/nixos/home";
+  };
+
   flake.modules.generic.homeManagerIntegration = {
     home-manager = {
       useGlobalPkgs = true;
