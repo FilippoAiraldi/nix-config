@@ -18,16 +18,16 @@ in
         withUWSM = true;
       };
 
-      # load homeManager.hyprland with a special arg `hostName`
+      # load homeManager.hyprland with special arg `isVM`
       home-manager.extraSpecialArgs = {
-        hostName = config.hostName;
+        inherit (config) isVM;
       };
       home-manager.sharedModules = [ homeManager.hyprland ];
     };
 
   flake.modules.homeManager.hyprland =
     {
-      hostName,
+      isVM,
       config,
       lib,
       pkgs,
@@ -71,7 +71,6 @@ in
             }
           ];
 
-          isVM = lib.hasSuffix "vm" (lib.toLower hostName);
           clipBridge = pkgs.writeShellScript "clip-bridge" ''
             export PATH=${
               lib.makeBinPath [

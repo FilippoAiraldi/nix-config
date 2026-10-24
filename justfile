@@ -13,6 +13,10 @@ nixos-rebuild flake=flake:
     sudo nixos-rebuild switch --flake {{flake}}
     @echo "NixOS rebuild complete."
 
+# Stage all changes (flakes ignore untracked files) and rebuild
+rebuild: && (nixos-rebuild)
+    git add .
+
 # Run Nix garbage collection
 nix-gc:
     @echo "Collecting Nix garbage..."

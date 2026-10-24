@@ -6,6 +6,8 @@ in
   flake.modules.nixos.common.imports = [
     generic.homeManagerIntegration
     generic.hostName
+    generic.isVM
+    generic.nixosHomeEnv
     generic.nixSettings
     generic.primaryUser
     generic.primaryUserHome
@@ -54,10 +56,15 @@ in
     nixos.services
   ];
 
-  flake.modules.generic.homeManagerIntegration.home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    sharedModules = [ homeManager.base ];
+  flake.modules.generic = {
+    homeManagerIntegration.home-manager = {
+      useGlobalPkgs = true;
+      useUserPackages = true;
+      sharedModules = [ homeManager.base ];
+    };
+    nixosHomeEnv = {
+      environment.variables.NIXOS_HOME = "/etc/nixos/home";
+    };
   };
 
   flake.modules.homeManager.base.imports = [

@@ -11,16 +11,16 @@ in
       # https://mynixos.com/home-manager/option/programs.hyprlock.enable
       security.pam.services.hyprlock = { };
 
-      # load homeManager.lock-screen with a special arg `hostName`
+      # load homeManager.lock-screen with special arg `isVM`
       home-manager.extraSpecialArgs = {
-        hostName = config.hostName;
+        inherit (config) isVM;
       };
       home-manager.sharedModules = [ homeManager.lock-screen ];
     };
 
   flake.modules.homeManager.lock-screen =
     {
-      hostName,
+      isVM,
       config,
       lib,
       pkgs,
@@ -29,7 +29,6 @@ in
     let
       inherit (config.stylix) fonts;
       inherit (config.lib.stylix) colors;
-      isVM = lib.hasSuffix "vm" (lib.toLower hostName);
       hyprlock-software = pkgs.symlinkJoin {
         name = "hyprlock-software";
         paths = [ pkgs.hyprlock ];
