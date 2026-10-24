@@ -4,7 +4,12 @@ let
 in
 {
   flake.modules.nixos.style =
-    { config, pkgs, ... }:
+    {
+      config,
+      pkgs,
+      lib,
+      ...
+    }:
     let
       inherit (config.profile.appearance.fonts) monospace sansSerif sizes;
     in
@@ -44,18 +49,53 @@ in
         };
 
         # system-level per-target options
-        targets.plymouth.enable = false;
+        autoEnable = false;
+        targets =
+          lib.genAttrs
+            [
+              "console"
+              "font-packages"
+              "fontconfig"
+              "limine"
+              "nixos-icons"
+              "nixvim"
+              "qt"
+            ]
+            (_: {
+              enable = true;
+            });
       };
     };
 
-  flake.modules.homeManager.style = {
-    # HomeManager-level per-target options
-    stylix.targets = {
-      hyprland.hyprpaper.enable = false; # NOTE: crashes; use swaybg instead
-      hyprpaper.enable = false;
-      rofi.enable = false;
-      waybar.enable = false; # done manually
-      hyprlock.enable = false;
+  flake.modules.homeManager.style =
+    { lib, ... }:
+    {
+      stylix = {
+        # HomeManager-level per-target options
+        autoEnable = false;
+        targets =
+          lib.genAttrs
+            [
+              "bat"
+              "font-packages"
+              "fontconfig"
+              "foot"
+              "fzf"
+              "fuzzel"
+              "nixos-icons"
+              "nixvim"
+              "qt"
+              "zellij"
+            ]
+            (_: {
+              enable = true;
+            })
+          // {
+            hyprland = {
+              enable = true;
+              hyprpaper.enable = false; # NOTE: crashes; use swaybg instead
+            };
+          };
+      };
     };
-  };
 }
