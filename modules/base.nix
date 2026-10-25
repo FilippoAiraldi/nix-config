@@ -42,7 +42,6 @@ in
       darwin.brave
       darwin.fonts
       darwin.keyboard
-      darwin.mos
       darwin.systemPreferences
       darwin.users
       darwin.zsh

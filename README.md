@@ -39,7 +39,7 @@ The repo follows the [dendritic pattern](https://github.com/mightyiam/dendritic)
 
 ## Conventions
 
-- Files under `modules/nixos/`, `modules/darwin/`, or `modules/programs/` typically declare modules of a single class (`nixos.*`, `darwin.*`, `homeManager.*`). Vertical program features such as Zsh, Podman, Brave, and Mos may declare modules for more than one class.
+- Files under `modules/nixos/`, `modules/darwin/`, or `modules/programs/` typically declare modules of a single class (`nixos.*`, `darwin.*`, `homeManager.*`). Vertical program features such as Zsh, Podman and Brave may declare modules for more than one class.
 - Files at the root of `modules/`, and files under `modules/desktop/`, may span more than one class. For example, `fonts.nix` declares both `darwin.fonts` and `homeManager.fonts`, and `users.nix` declares both `nixos.users` and `darwin.users`. Single-class modules may also live there (e.g. `catppuccin.nix`, `desktop/gtk.nix`).
 - `modules/base.nix` collects default workstation features into `nixos.base`, `darwin.base`, and `homeManager.base`. Opt-in features are composed by their owning host or parent feature instead.
 - Hosts in `modules/hosts/` import `nixos.base` or `darwin.base` together with any opt-in extras such as `nixos.niri`, `nixos.gaming`, or `darwin.aerospace`.
