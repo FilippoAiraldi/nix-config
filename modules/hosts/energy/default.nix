@@ -10,7 +10,6 @@ in
       ./_hardware.nix
       nixos.base
       nixos.niri
-      nixos.gaming
     ];
 
     primaryUser = "nabokikh";
