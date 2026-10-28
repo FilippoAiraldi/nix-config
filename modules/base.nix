@@ -62,6 +62,7 @@ in
       nixos.packages
       nixos.users
     ];
+    home-manager.sharedModules = [ homeManager.pi-coding-agent ];
   };
 
   flake.modules.homeManager.base = {
