@@ -14,7 +14,10 @@ in
 
     # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
     inherit hostName primaryUser;
-    wsl.defaultUser = primaryUser;
+    wsl = {
+      defaultUser = primaryUser;
+      interop.includePath = false;
+    };
     users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`
   };
 }
