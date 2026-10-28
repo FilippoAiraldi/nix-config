@@ -3,11 +3,13 @@
     { pkgs, ... }:
     {
       imports = [
-        ./_packages/pi-permission-system.nix
+        # ./_packages/pi-permission-system.nix
+        ./_packages/pi-sandbox.nix
       ];
 
       programs.pi-coding-agent = {
         enable = true;
+        extraPackages = with pkgs; [ nodejs ];
 
         # content of AGENTS.md
         # context = ''

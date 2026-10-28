@@ -2,7 +2,6 @@
 {
   programs.pi-coding-agent = {
     extraPackages = with pkgs; [
-      nodejs
       pnpm
     ];
     settings.packages = [ "npm:@gotgenes/pi-permission-system" ];
