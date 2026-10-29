@@ -15,6 +15,10 @@
       url = "github:sandwichfarm/hyprexpo";
       flake = false;
     };
+    hyprmod = {
+      url = "github:BlueManCZ/hyprmod";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mangowm = {
       url = "github:mangowm/mango";
       inputs.nixpkgs.follows = "nixpkgs";

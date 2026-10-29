@@ -37,6 +37,7 @@ in
       imports = [
         homeManager.cursor
         homeManager.hyprexpo
+        homeManager.settings
         homeManager.status-bar
       ];
 
