@@ -3,7 +3,12 @@
 { inputs, ... }:
 {
   flake.modules.homeManager.settings =
-    { isVM, pkgs, ... }:
+    {
+      isVM,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       hyprmod = inputs.hyprmod.packages.${pkgs.stdenv.hostPlatform.system}.default;
       hyprmod-wrapped = pkgs.symlinkJoin {
@@ -14,8 +19,17 @@
           wrapProgram $out/bin/hyprmod --set LIBGL_ALWAYS_SOFTWARE 1
         '';
       };
+      pkg = if isVM then hyprmod-wrapped else hyprmod;
     in
     {
-      home.packages = [ (if isVM then hyprmod-wrapped else hyprmod) ];
+      options.desktop.settingsCmd = lib.mkOption {
+        type = lib.types.str;
+        description = "Command to open settings";
+      };
+
+      config = {
+        desktop.settingsCmd = "hyprmod";
+        home.packages = [ pkg ];
+      };
     };
 }

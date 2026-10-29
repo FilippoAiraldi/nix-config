@@ -20,8 +20,9 @@ in
     primaryUser = "fairaldi";
     system.stateVersion = "26.05";
 
-    # just for enabling guest tools in the VM
-    virtualisation.vmware.guest.enable = true;
+    # settings required by the VM to work
     environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = "1";
+    hardware.graphics.enable = true;
+    virtualisation.vmware.guest.enable = true;
   };
 }

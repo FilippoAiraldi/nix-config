@@ -8,9 +8,7 @@ in
   flake.modules.nixos.hyprland =
     { config, pkgs, ... }:
     {
-      imports = [
-        nixos.lock-screen
-      ];
+      imports = [ nixos.lock-screen ];
 
       environment.systemPackages = with pkgs; [ wlr-randr ];
       programs.hyprland = {
@@ -35,6 +33,7 @@ in
     }:
     {
       imports = [
+        homeManager.control-center
         homeManager.cursor
         homeManager.hyprexpo
         homeManager.settings
@@ -205,6 +204,11 @@ in
                   (lua "mod .. ' + L'")
                   (lua "hl.dsp.exec_cmd('${config.desktop.lockScreenCmd}')")
                   { description = "Lock screen"; }
+                ]
+                [
+                  (lua "mod .. ' + I'")
+                  (lua "hl.dsp.exec_cmd('${config.desktop.controlCenterCmd}')")
+                  { description = "Control center"; }
                 ]
                 [
                   "ALT + Q"
