@@ -273,6 +273,26 @@
         "type": "github"
       }
     },
+    "hyprmod": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791555169,
+        "narHash": "sha256-x8/LWtNX2i1rhw1Mi2VYaMN54Aa15NtQatHwPeSbBxU=",
+        "owner": "BlueManCZ",
+        "repo": "hyprmod",
+        "rev": "b475087af485bf53b33c4529ed616a220b512649",
+        "type": "github"
+      },
+      "original": {
+        "owner": "BlueManCZ",
+        "repo": "hyprmod",
+        "type": "github"
+      }
+    },
     "import-tree": {
       "locked": {
         "lastModified": 1788467110,
@@ -469,6 +489,7 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "hyprexpo": "hyprexpo",
+        "hyprmod": "hyprmod",
         "import-tree": "import-tree",
         "mangobar": "mangobar",
         "mangowm": "mangowm",
