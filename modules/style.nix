@@ -41,6 +41,12 @@ in
             desktop = sizes.desktop;
           };
         };
+        icons = {
+          enable = true;
+          package = pkgs.rose-pine-icon-theme;
+          dark = "rose-pine-moon";
+          light = "rose-pine-dawn";
+        };
 
         # wallpaper
         image = pkgs.fetchurl {
