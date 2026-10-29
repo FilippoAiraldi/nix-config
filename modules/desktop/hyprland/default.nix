@@ -47,6 +47,7 @@ in
           mkVar = var: { _var = var; };
 
           inherit (config.profile.appearance) border;
+          inherit (config.stylix) fonts;
           rescaleFactor = "1.1";
           directions = [
             {
@@ -104,6 +105,20 @@ in
           ];
           shutdownCmd =
             if isVM then "hl.dsp.exit()" else "hl.dsp.exec_cmd('${lib.getExe pkgs.hyprshutdown}')";
+          keybindsMenu = pkgs.writeShellApplication {
+            name = "hypr-keybinds";
+            text = with pkgs; ''
+              ${lib.getExe' hyprland "hyprctl"} -j binds | ${lib.getExe jq} -r '
+                def mods: . as $m
+                  | [[1,"SHIFT"],[4,"CTRL"],[8,"ALT"],[64,"SUPER"]]
+                  | map(select(($m / .[0] | floor) % 2 == 1) | .[1]);
+                .[] | select(.description != "")
+                | ((.modmask | mods) + [.key] | join(" + ")) + "\t" + .description
+              ' | ${lib.getExe' util-linux "column"} -t -s $'\t' | ${lib.getExe fuzzel} --dmenu \
+                  --font '${fonts.monospace.name}:size=${toString fonts.sizes.desktop}' \
+                  --prompt 'Keybinds: ' --width 60 --lines 20 || true
+            '';
+          };
         in
         {
           enable = true;
@@ -176,68 +191,86 @@ in
               [
                 # general & window management
                 [
-                  (lua "mod .. ' + R'") # reload configuration
+                  (lua "mod .. ' + R'")
                   (lua "hl.dsp.exec_cmd('hyprctl reload')")
+                  { description = "Reload config"; }
                 ]
                 [
-                  (lua "mod .. ' + M'") # elegant quit
+                  (lua "mod .. ' + M'")
                   (lua shutdownCmd)
+                  { description = "Exit Hyprland"; }
                 ]
                 [
-                  (lua "mod .. ' + L'") # lock scren
+                  (lua "mod .. ' + L'")
                   (lua "hl.dsp.exec_cmd('${config.desktop.lockScreenCmd}')")
+                  { description = "Lock screen"; }
                 ]
                 [
-                  "ALT + Q" # close window
+                  "ALT + Q"
                   (lua "hl.dsp.window.close()")
+                  { description = "Close window"; }
                 ]
                 [
-                  "SHIFT + ALT + Q" # kill window
+                  "SHIFT + ALT + Q"
                   (lua "hl.dsp.window.kill()")
+                  { description = "Kill window"; }
                 ]
                 [
-                  "ALT + RETURN" # launch terminal
+                  "ALT + RETURN"
                   (lua "hl.dsp.exec_cmd('${config.desktop.terminalCmd}')")
+                  { description = "Open terminal"; }
                 ]
                 [
-                  "ALT + SPACE" # toggle application launcher
+                  "ALT + SPACE"
                   (lua "hl.dsp.exec_cmd('pkill ${config.desktop.appLauncherName} || ${config.desktop.appLauncherCmd}')")
+                  { description = "Toggle app launcher"; }
                 ]
                 [
-                  (lua "mod .. ' + MINUS'") # scale active monitor down
+                  (lua "mod .. ' + MINUS'")
                   (lua "function() rescale_active_monitor('down') end")
+                  { description = "Scale monitor down"; }
                 ]
                 [
-                  (lua "mod .. ' + EQUAL'") # scale active monitor up
+                  (lua "mod .. ' + EQUAL'")
                   (lua "function() rescale_active_monitor('up') end")
+                  { description = "Scale monitor up"; }
+                ]
+                [
+                  (lua "mod .. ' + H'")
+                  (lua "hl.dsp.exec_cmd('${lib.getExe keybindsMenu}')")
+                  { description = "Show keybinds"; }
                 ]
 
                 # window focus, movement & resizing
                 [
-                  "ALT + TAB" # focus next window
+                  "ALT + TAB"
                   (lua ''
                     function()
                       hl.dispatch(hl.dsp.window.cycle_next({ next = true }))
                       hl.dispatch(hl.dsp.window.bring_to_top())
                     end
                   '')
+                  { description = "Focus next window"; }
                 ]
                 [
-                  "SHIFT + ALT + TAB" # jump back to previously focused window
+                  "SHIFT + ALT + TAB"
                   (lua ''
                     function()
                       hl.dispatch(hl.dsp.window.cycle_next({ next = false }))
                       hl.dispatch(hl.dsp.window.bring_to_top())
                     end
                   '')
+                  { description = "Focus previous window"; }
                 ]
                 [
-                  "ALT + A" # toggle maximized
+                  "ALT + A"
                   (lua "hl.dsp.window.fullscreen({ mode = 'maximized' })")
+                  { description = "Toggle maximized"; }
                 ]
                 [
-                  "ALT + F" # toggle fullscreen
+                  "ALT + F"
                   (lua "hl.dsp.window.fullscreen({ mode = 'fullscreen' })")
+                  { description = "Toggle fullscreen"; }
                 ]
               ]
               ++ lib.concatMap (
@@ -247,16 +280,19 @@ in
                 in
                 [
                   [
-                    "ALT + ${key}" # move window focus in direction
+                    "ALT + ${key}"
                     (lua "hl.dsp.focus({ direction = '${dir.name}' })")
+                    { description = "Focus window ${dir.name}"; }
                   ]
                   [
-                    "SHIFT + ALT + ${key}" # move window in direction
+                    "SHIFT + ALT + ${key}"
                     (lua "hl.dsp.window.move({ direction = '${dir.name}' })")
+                    { description = "Move window ${dir.name}"; }
                   ]
                   [
-                    "CTRL + ALT + ${key}" # resize window
+                    "CTRL + ALT + ${key}"
                     (lua "hl.dsp.window.resize({ x = ${dir.x}, y = ${dir.y}, relative = true })")
+                    { description = "Resize window ${dir.name}"; }
                   ]
                 ]
               ) directions
@@ -268,57 +304,72 @@ in
                 in
                 [
                   [
-                    "CTRL + ${n}" # go to workspace n
+                    "CTRL + ${n}"
                     (lua "hl.dsp.focus({ workspace = ${n} })")
+                    { description = "Go to workspace ${n}"; }
                   ]
                   [
-                    "ALT + ${n}" # move active window to workspace n
+                    "ALT + ${n}"
                     (lua "hl.dsp.window.move({ workspace = ${n}, follow = true })")
+                    { description = "Move window to workspace ${n}"; }
                   ]
                 ]
               ) (lib.range 1 9)
               ++ [
                 [
-                  "CTRL + LEFT" # go to previous non-empty workspace
+                  "CTRL + LEFT"
                   (lua "hl.dsp.focus({ workspace = 'e-1' })")
+                  { description = "Previous non-empty workspace"; }
                 ]
                 [
-                  "CTRL + RIGHT" # go to next non-empty workspace
+                  "CTRL + RIGHT"
                   (lua "hl.dsp.focus({ workspace = 'e+1' })")
+                  { description = "Next non-empty workspace"; }
                 ]
                 # dwindle layout
                 [
-                  "SHIFT + ALT + RETURN" # toggle split direction
+                  "SHIFT + ALT + RETURN"
                   (lua "hl.dsp.layout('togglesplit')")
+                  { description = "Toggle split direction"; }
                 ]
                 # mouse and trackpad gestures
                 # https://wiki.hypr.land/configuring/core/binds/devices/mouse
                 # https://wiki.hypr.land/configuring/core/binds/gestures
                 [
-                  (lua "mod .. ' + mouse_up'") # mouse scroll up -> previous non-empty workspace
+                  (lua "mod .. ' + mouse_up'")
                   (lua "hl.dsp.focus({ workspace = 'e-1' })")
+                  { description = "Scroll to previous non-empty workspace"; }
                 ]
                 [
-                  (lua "mod .. ' + mouse_down'") # mouse scroll down -> next non-empty workspace
+                  (lua "mod .. ' + mouse_down'")
                   (lua "hl.dsp.focus({ workspace = 'e+1' })")
+                  { description = "Scroll to next non-empty workspace"; }
                 ]
                 [
-                  (lua "mod .. ' + mouse:272'") # left mouse button -> move window
+                  (lua "mod .. ' + mouse:272'")
                   (lua "hl.dsp.window.drag()")
-                  { mouse = true; }
+                  {
+                    mouse = true;
+                    description = "Drag window with left mouse button";
+                  }
                 ]
                 [
-                  (lua "mod .. ' + mouse:273'") # right mouse button -> resize window
+                  (lua "mod .. ' + mouse:273'")
                   (lua "hl.dsp.window.resize()")
-                  { mouse = true; }
+                  {
+                    mouse = true;
+                    description = "Resize window with right mouse button";
+                  }
                 ]
                 [
-                  (lua "mod .. ' + mouse:274'") # middle mouse button -> close window
+                  (lua "mod .. ' + mouse:274'")
                   (lua "hl.dsp.window.close()")
+                  { description = "Close window with middle mouse button"; }
                 ]
                 [
-                  (lua "mod .. ' + SHIFT + mouse:274'") # shift + middle mouse button -> kill window
+                  (lua "mod .. ' + SHIFT + mouse:274'")
                   (lua "hl.dsp.window.kill()")
+                  { description = "Kill window with shift + middle mouse button"; }
                 ]
               ]
             );
