@@ -22,6 +22,7 @@
       config =
         let
           inherit (config.profile.appearance) border;
+          inherit (config.lib.stylix) colors;
           appLauncherName = "fuzzel";
           pkg = pkgs.${appLauncherName};
         in
@@ -40,8 +41,9 @@
                 width = border.width;
               };
               colors = {
-                background = lib.mkForce "${config.lib.stylix.colors.base00}cc";
-                selection = lib.mkForce "${config.lib.stylix.colors.base02}cc";
+                background = lib.mkForce "${colors.base00}e3";
+                border = lib.mkForce "${colors.base0E}ff";
+                selection = lib.mkForce "${colors.base02}cc";
               };
               key-bindings = {
                 delete-line-forward = "none";
