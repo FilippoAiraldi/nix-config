@@ -28,7 +28,7 @@
         };
         appearance = {
           border = {
-            radius = 3;
+            radius = 4;
             width = 3;
           };
           fonts = {

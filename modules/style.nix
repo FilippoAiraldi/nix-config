@@ -92,6 +92,7 @@ in
               "nixos-icons"
               "nixvim"
               "qt"
+              "vicinae"
               "zellij"
             ]
             (_: {

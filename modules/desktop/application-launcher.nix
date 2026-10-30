@@ -1,5 +1,6 @@
-# Walker
-# https://github.com/abenz1267/walker
+# Vicinae
+# https://www.vicinae.com
+{ inputs, ... }:
 {
   flake.modules.homeManager.application-launcher =
     {
@@ -20,146 +21,106 @@
           description = "Command to show the Hyprland keybinds menu";
         };
       };
+
       config =
         let
-          pkg = pkgs.walker;
-          providers = [
-            "calc" # =
-            "clipboard" # :
-            "desktopapplications"
-            "files" # /
-            "menus"
-            "providerlist" # ;
-            "runner"
-            "symbols" # .
-            "unicode" # ,
-          ];
-          hyprlandKeybindsMenu = pkgs.writeShellApplication {
-            name = "hypr-keybinds";
-            text = with pkgs; ''
-              ${lib.getExe' hyprland "hyprctl"} -j binds | ${lib.getExe jq} -r '
-                def mods: . as $m
-                  | [[1,"SHIFT"],[4,"CTRL"],[8,"ALT"],[64,"SUPER"]]
-                  | map(select(($m / .[0] | floor) % 2 == 1) | .[1]);
-                .[] | select(.description != "")
-                | ((.modmask | mods) + [.key] | join(" + ")) + "\t" + .description
-              ' | ${lib.getExe' util-linux "column"} -t -s $'\t' \
-                | ${lib.getExe pkg} --dmenu --placeholder 'Keybinds' || true
-            '';
-          };
+          inherit (config.profile.appearance) border;
+          inherit (config.lib.stylix) colors;
+          inherit (config.stylix) fonts;
+          pkg = pkgs.vicinae;
         in
         {
           desktop = {
-            appLauncherCmd = "nc -U \"$XDG_RUNTIME_DIR/walker/walker.sock\"";
-            hyprlandKeybindsMenuCmd = lib.getExe hyprlandKeybindsMenu;
+            appLauncherCmd = "${lib.getExe pkg} toggle";
+            hyprlandKeybindsMenuCmd = "${lib.getExe pkg} toggle";
           };
 
-          systemd.user.services.walker.Service.Environment = lib.mkIf isVM [ "LIBGL_ALWAYS_SOFTWARE=1" ];
+          systemd.user.services.vicinae.Service.Environment = lib.mkIf isVM [
+            "LIBGL_ALWAYS_SOFTWARE=1"
+            # "USE_LAYER_SHELL=0"
+            # "QT_QUICK_BACKEND=\"software\""
+          ];
+          programs.vicinae = {
+            enable = true;
+            package = pkg;
+            systemd.enable = true;
 
-          services = {
-            elephant = {
-              enable = true;
-              package = pkgs.elephant.override { enabledProviders = providers; };
-            };
-
-            walker = {
-              enable = true;
-              package = pkg;
-              enableElephantIntegration = true;
-              systemd.enable = true;
-
-              settings.providers = {
-                empty = [ "desktopapplications" "runner" ];
-                prefixes = [
-                  {
-                    provider = "unicode";
-                    prefix = ",";
-                  }
-                ];
+            # https://github.com/vicinaehq/vicinae/blob/main/extra/config.jsonc
+            settings = {
+              close_on_focus_loss = true;
+              consider_preedit = true;
+              # encrypt_sensitive_data = true;  # crashes the service
+              escape_key_behavior = "close_window";
+              keybinding = "vim";
+              launcher_window = {
+                blur.enabled = false;
+                client_side_decorations.shadow_size = 0;
+                clock.enabled = false;
+                compact_mode.enabled = true;
+                material = "none";
+                rounding = border.radius;
               };
+              pop_to_root_on_close = true;
+              search_files_in_root = true;
+              telemetry.system_info = false;
+              tray.enabled = false;
+              updates.show_notice = false;
 
-              theme =
-                let
-                  inherit (config.profile.appearance) border;
-                  inherit (config.lib.stylix) colors;
-                  inherit (config.stylix) fonts;
-                in
-                {
-                  name = "stylix";
-                  style = with colors.withHashtag; ''
-                    * {
-                      font-family: "${fonts.monospace.name}";
-                      font-size: ${toString fonts.sizes.popups}pt;
-                      color: ${base05};
-                      text-shadow: none;
-                      box-shadow: none;
-                      transition: none;
-                      animation: none;
-                    }
-                    .window,
-                    .box-wrapper {
-                      background: alpha(${base00}, 0.89);
-                      border: ${toString border.width}px solid ${base0E};
-                      border-radius: ${toString border.radius}px;
-                      padding: 12px;
-                    }
-                    .window {
-                      background: transparent;
-                      border: none;
-                      padding: 0;
-                    }
-                    .search-container,
-                    .input {
-                      background: ${base01};
-                      border-radius: ${toString border.radius}px;
-                      padding: 6px 10px;
-                    }
-                    .input {
-                      padding: 0;
-                      caret-color: ${base0E};
-                    }
-                    .input placeholder {
-                      color: ${base03};
-                    }
-                    .list,
-                    .preview,
-                    .content-container {
-                      background: transparent;
-                    }
-                    .item-box {
-                      background: transparent;
-                      border-radius: ${toString border.radius}px;
-                      padding: 6px 10px;
-                    }
-                    child:hover .item-box,
-                    child:selected .item-box,
-                    .item-box:selected {
-                      background: alpha(${base02}, 0.8);
-                    }
-                    .item-text,
-                    .item-text-box {
-                      color: ${base05};
-                    }
-                    .item-subtext {
-                      color: ${base04};
-                      font-size: ${toString fonts.sizes.desktop}pt;
-                    }
-                    .keybind-bind,
-                    .keybind-label,
-                    .elephant-hint,
-                    .placeholder {
-                      color: ${base03};
-                    }
-                    scrollbar,
-                    scrollbar slider {
-                      background: transparent;
-                      min-width: 0;
-                    }
-                  '';
+              fallbacks = [
+                "files:search"
+                "system:browse-apps"
+                "system:run"
+              ];
+              providers = {
+                applications.preferences.defaultAction = "launch";
+                browser-extension.enabled = false;
+                core.entrypoints = {
+                  manage-fallback.enabled = false;
+                  report-bug.enabled = false;
+                  search-builtin-icons.enabled = true;
+                  sponsor.enabled = false;
                 };
+                clipboard.preferences.evictionThreshold = 7776000;
+                developer.enabled = false;
+                files.preferences.indexingPaths = [
+                  "/home/${config.home.username}"
+                  "/etc/nixos/home"
+                ];
+                manage-shortcuts.enabled = false;
+                media.enabled = false;
+                power.enabled = false;
+                raycast-compat.enabled = false;
+                snippets.enabled = false;
+                system.entrypoints = {
+                  set-default-browser.enabled = false;
+                  set-default-terminal.enabled = false;
+                };
+                theme.enabled = false;
+                wm.enabled = false;
+              };
             };
-          };
 
+            # adjust some theme-related options from Stylix
+            settings.font.normal.family = lib.mkForce fonts.monospace.name;
+            themes.stylix.colors.core.border = lib.mkForce colors.withHashtag.base0E;
+
+            # https://github.com/vicinaehq/extensions/tree/main/extensions
+            extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+              bitwarden
+              coffee
+              color-converter
+              # fff-search
+              hypr-keybinds
+              # hypr
+              # hyprland-monitors
+              # nerdfont-search
+              nix
+              number-converter
+              # power-profile
+              # otp
+            ];
+            settings.providers."@bl4zee1g/vicinae-extension-bitwarden-0".preferences.rbwPath = lib.getExe pkgs.rbw;
+          };
         };
     };
 }
