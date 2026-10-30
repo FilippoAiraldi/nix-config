@@ -47,7 +47,6 @@ in
           mkVar = var: { _var = var; };
 
           inherit (config.profile.appearance) border;
-          inherit (config.stylix) fonts;
           rescaleFactor = "1.1";
           directions = [
             {
@@ -105,20 +104,6 @@ in
           ];
           shutdownCmd =
             if isVM then "hl.dsp.exit()" else "hl.dsp.exec_cmd('${lib.getExe pkgs.hyprshutdown}')";
-          keybindsMenu = pkgs.writeShellApplication {
-            name = "hypr-keybinds";
-            text = with pkgs; ''
-              ${lib.getExe' hyprland "hyprctl"} -j binds | ${lib.getExe jq} -r '
-                def mods: . as $m
-                  | [[1,"SHIFT"],[4,"CTRL"],[8,"ALT"],[64,"SUPER"]]
-                  | map(select(($m / .[0] | floor) % 2 == 1) | .[1]);
-                .[] | select(.description != "")
-                | ((.modmask | mods) + [.key] | join(" + ")) + "\t" + .description
-              ' | ${lib.getExe' util-linux "column"} -t -s $'\t' | ${lib.getExe fuzzel} --dmenu \
-                  --font '${fonts.monospace.name}:size=${toString fonts.sizes.desktop}' \
-                  --prompt 'Keybinds: ' --width 60 --lines 20 || true
-            '';
-          };
         in
         {
           enable = true;
@@ -242,7 +227,7 @@ in
                 ]
                 [
                   (lua "mod .. ' + H'")
-                  (lua "hl.dsp.exec_cmd('${lib.getExe keybindsMenu}')")
+                  (lua "hl.dsp.exec_cmd('${config.desktop.hyprlandKeybindsMenuCmd}')")
                   { description = "Show keybinds"; }
                 ]
 

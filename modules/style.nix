@@ -88,7 +88,6 @@ in
               "fontconfig"
               "foot"
               "fzf"
-              "fuzzel"
               "gtk"
               "nixos-icons"
               "nixvim"
