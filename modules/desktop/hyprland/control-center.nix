@@ -300,6 +300,12 @@
                   color: ${base00};
                   background: ${base0E};
                 }
+                .notification-action:hover label {
+                  color: ${base0E};
+                }
+                .notification-action:active label {
+                  color: ${base00};
+                }
               '';
           };
         };

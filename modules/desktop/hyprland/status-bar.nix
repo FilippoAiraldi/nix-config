@@ -261,6 +261,13 @@
             background: transparent;
             padding: 0 10px;
           }
+          #workspaces button.active label {
+            color: ${base0D};
+            font-weight: bold;
+          }
+          #workspaces button:hover label {
+            color: ${base0E};
+          }
         '';
       };
     };
