@@ -227,7 +227,7 @@ in
                 ]
                 [
                   "ALT + SPACE"
-                  (lua "hl.dsp.exec_cmd('pkill ${config.desktop.appLauncherName} || ${config.desktop.appLauncherCmd}')")
+                  (lua "hl.dsp.exec_cmd('${config.desktop.appLauncherCmd}')")
                   { description = "Toggle app launcher"; }
                 ]
                 [

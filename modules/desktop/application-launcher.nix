@@ -10,29 +10,24 @@
     }:
     {
       options.desktop = {
-        appLauncherName = lib.mkOption {
-          type = lib.types.str;
-          description = "Name of the app launcher (e.g., `rofi`)";
-        };
         appLauncherCmd = lib.mkOption {
           type = lib.types.str;
-          description = "Command to spawn the app launcher (e.g., `rofi -show drun`)";
+          description = "Command to toggle the app launcher";
         };
       };
       config =
         let
           inherit (config.profile.appearance) border;
           inherit (config.lib.stylix) colors;
-          appLauncherName = "fuzzel";
-          pkg = pkgs.${appLauncherName};
+          name = "fuzzel";
+          pkg = pkgs.${name};
         in
         {
           desktop = {
-            appLauncherCmd = lib.getExe pkg;
-            appLauncherName = appLauncherName;
+            appLauncherCmd = "pkill ${name} || ${lib.getExe pkg}";
           };
 
-          programs.${appLauncherName} = {
+          programs.${name} = {
             enable = true;
             package = pkg;
             settings = {
