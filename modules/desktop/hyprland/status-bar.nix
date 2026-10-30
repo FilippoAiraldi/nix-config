@@ -11,6 +11,7 @@
       ...
     }:
     let
+      inherit (config) desktop;
       inherit (config.stylix) fonts;
       inherit (config.lib.stylix) colors;
     in
@@ -34,7 +35,9 @@
             ];
             modules-center = [ "hyprland/workspaces" ];
             modules-right = [
+              "tray"
               "hyprland/language"
+              "custom/notifications"
               "network"
               "clock#date"
               "clock#time"
@@ -81,7 +84,27 @@
               format = "󰍁";
               tooltip = true;
               tooltip-format = "Lock";
-              on-click = config.desktop.lockScreenCmd;
+              on-click = desktop.lockScreenCmd;
+            };
+            "custom/notifications" = {
+              format = "{icon}";
+              format-icons = {
+                notification = "󱅫";
+                none = "󰂜";
+                dnd-notification = "󰂠";
+                dnd-none = "󰪓";
+                inhibited-notification = "󰂛";
+                inhibited-none = "󰪑";
+                dnd-inhibited-notification = "󰂛";
+                dnd-inhibited-none = "󰪑";
+              };
+              return-type = "json";
+              exec-if = "which swaync-client";
+              exec = desktop.controlCenterSubscribeCmd;
+              on-click = desktop.controlCenterToggleCmd;
+              on-click-right = desktop.controlCenterDoNotDisturbCmd;
+              escape = true;
+              tooltip = true;
             };
             "custom/power" = {
               format = "";
@@ -126,8 +149,12 @@
               on-click = "activate";
               window-rewrite-default = "";
               window-rewrite = {
-                "class<(firefox|librewolf)>" = "󰈹";
+                firefox = "󰈹";
                 foot = "";
+                htop = "󰄨";
+                librewolf = "󰩃";
+                vicinae = "";
+                xdg-desktop-portal = "";
               };
             };
             memory = {
@@ -152,6 +179,10 @@
               tooltip-format-ethernet = "󰀂  {ifname}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
               tooltip-format-disconnected = "Disconnected";
               # on-click = "nm-connection-editor"; # TODO: install connection editor
+            };
+            tray = {
+              icon-size = 18;
+              spacing = 10;
             };
           };
         };
@@ -185,10 +216,12 @@
 
           /* spacing between modules */
           #clock,
+          #custom-notifications,
           #language,
           #memory,
           #network,
           #power-group,
+          #tray,
           #workspaces {
             margin: 0 6px;
             padding: 0 6px;

@@ -12,17 +12,31 @@
       ...
     }:
     {
-      options.desktop.controlCenterCmd = lib.mkOption {
-        type = lib.types.str;
-        description = "Command to toggle the control center";
+      options.desktop = {
+        controlCenterToggleCmd = lib.mkOption {
+          type = lib.types.str;
+          description = "Command to toggle the control center";
+        };
+        controlCenterDoNotDisturbCmd = lib.mkOption {
+          type = lib.types.str;
+          description = "Command to toggle dnd in the control center";
+        };
+        controlCenterSubscribeCmd = lib.mkOption {
+          type = lib.types.str;
+          description = "Command to subscribe to notifications (JSON)";
+        };
       };
 
       config =
         let
-          controlCenterCmd = "swaync-client -t -sw";
+          controlCenterToggleCmd = "swaync-client -t -sw";
         in
         {
-          desktop.controlCenterCmd = controlCenterCmd;
+          desktop = {
+            controlCenterToggleCmd = controlCenterToggleCmd;
+            controlCenterDoNotDisturbCmd = "swaync-client -d -sw";
+            controlCenterSubscribeCmd = "swaync-client -swb";
+          };
 
           home.packages = with pkgs; [ hyprpicker ];
           systemd.user.services.swaync.Service.Environment = lib.mkIf isVM [ "GSK_RENDERER=cairo" ];
@@ -48,11 +62,11 @@
                 buttons-grid.actions = [
                   {
                     label = "󰏘";
-                    command = "${controlCenterCmd}; ${lib.getExe pkgs.hyprpicker}";
+                    command = "${controlCenterToggleCmd}; ${lib.getExe pkgs.hyprpicker}";
                   }
                   {
                     label = "";
-                    command = "${controlCenterCmd}; ${config.desktop.settingsCmd}";
+                    command = "${controlCenterToggleCmd}; ${config.desktop.settingsCmd}";
                   }
                 ];
                 dnd = { };

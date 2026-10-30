@@ -192,7 +192,7 @@ in
                 ]
                 [
                   (lua "mod .. ' + I'")
-                  (lua "hl.dsp.exec_cmd('${config.desktop.controlCenterCmd}')")
+                  (lua "hl.dsp.exec_cmd('${config.desktop.controlCenterToggleCmd}')")
                   { description = "Control center"; }
                 ]
                 [
@@ -261,6 +261,11 @@ in
                   "ALT + F"
                   (lua "hl.dsp.window.fullscreen({ mode = 'fullscreen' })")
                   { description = "Toggle fullscreen"; }
+                ]
+                [
+                  "ALT + BACKSPACE"
+                  (lua "hl.dsp.window.float()")
+                  { description = "Toggle a floating window"; }
                 ]
               ]
               ++ lib.concatMap (
