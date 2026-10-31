@@ -8,13 +8,12 @@ in
   flake.modules.nixos.hyprland =
     { config, pkgs, ... }:
     {
-      imports = [ nixos.lock-screen ];
-
       environment.systemPackages = with pkgs; [ wlr-randr ];
       programs.hyprland = {
         enable = true;
         withUWSM = true;
       };
+      imports = [ nixos.lock-screen ];
 
       # load homeManager.hyprland with special arg `isVM`
       home-manager.extraSpecialArgs = {
@@ -46,6 +45,7 @@ in
           mkArgs = args: { _args = args; };
           mkVar = var: { _var = var; };
 
+          inherit (config) desktop;
           inherit (config.profile.appearance) border;
           rescaleFactor = "1.1";
           directions = [
@@ -187,12 +187,12 @@ in
                 ]
                 [
                   (lua "mod .. ' + L'")
-                  (lua "hl.dsp.exec_cmd('${config.desktop.lockScreenCmd}')")
+                  (lua "hl.dsp.exec_cmd('${desktop.lockScreenCmd}')")
                   { description = "Lock screen"; }
                 ]
                 [
                   (lua "mod .. ' + I'")
-                  (lua "hl.dsp.exec_cmd('${config.desktop.controlCenterToggleCmd}')")
+                  (lua "hl.dsp.exec_cmd('${desktop.controlCenterToggleCmd}')")
                   { description = "Control center"; }
                 ]
                 [
@@ -207,12 +207,12 @@ in
                 ]
                 [
                   "ALT + RETURN"
-                  (lua "hl.dsp.exec_cmd('${config.desktop.terminalCmd}')")
+                  (lua "hl.dsp.exec_cmd('${desktop.terminalCmd}')")
                   { description = "Open terminal"; }
                 ]
                 [
                   "ALT + SPACE"
-                  (lua "hl.dsp.exec_cmd('${config.desktop.appLauncherCmd}')")
+                  (lua "hl.dsp.exec_cmd('${desktop.appLauncherCmd}')")
                   { description = "Toggle app launcher"; }
                 ]
                 [
@@ -227,7 +227,7 @@ in
                 ]
                 [
                   (lua "mod .. ' + H'")
-                  (lua "hl.dsp.exec_cmd('${config.desktop.hyprlandKeybindsMenuCmd}')")
+                  (lua "hl.dsp.exec_cmd('${desktop.hyprlandKeybindsMenuCmd}')")
                   { description = "Show keybinds"; }
                 ]
 

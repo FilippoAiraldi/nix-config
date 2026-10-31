@@ -32,7 +32,7 @@
         {
           desktop = {
             appLauncherCmd = "${lib.getExe pkg} toggle";
-            hyprlandKeybindsMenuCmd = "${lib.getExe pkg} toggle";
+            hyprlandKeybindsMenuCmd = "${lib.getExe pkg} vicinae://launch/@sovereign/vicinae-extension-hypr-keybinds-0/hyprland-keybinds";
           };
 
           systemd.user.services.vicinae.Service.Environment = lib.mkIf isVM [
@@ -40,6 +40,10 @@
             # "USE_LAYER_SHELL=0"
             # "QT_QUICK_BACKEND=\"software\""
           ];
+
+          # always overwrite config file ~/.config/vicinae/settings.json
+          xdg.configFile."vicinae/settings.json".force = true;
+
           programs.vicinae = {
             enable = true;
             package = pkg;
@@ -119,7 +123,8 @@
               # power-profile
               # otp
             ];
-            settings.providers."@bl4zee1g/vicinae-extension-bitwarden-0".preferences.rbwPath = lib.getExe pkgs.rbw;
+            settings.providers."@bl4zee1g/vicinae-extension-bitwarden-0".preferences.rbwPath =
+              lib.getExe pkgs.rbw;
           };
         };
     };
