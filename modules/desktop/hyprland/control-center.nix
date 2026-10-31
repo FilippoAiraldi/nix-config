@@ -8,7 +8,6 @@
       config,
       isVM,
       lib,
-      pkgs,
       ...
     }:
     {
@@ -38,7 +37,6 @@
             controlCenterSubscribeCmd = "swaync-client -swb";
           };
 
-          home.packages = with pkgs; [ hyprpicker ];
           systemd.user.services.swaync.Service.Environment = lib.mkIf isVM [ "GSK_RENDERER=cairo" ];
           services.swaync = {
             enable = true;
@@ -53,22 +51,51 @@
               timeout-low = 3;
               transition-time = 0;
               widgets = [
-                "buttons-grid"
+                "menubar"
                 "dnd"
                 "title"
                 "notifications"
               ];
-              widget-config = {
-                buttons-grid.actions = [
-                  {
-                    label = "󰏘";
-                    command = "${controlCenterToggleCmd}; ${lib.getExe pkgs.hyprpicker}";
-                  }
-                  {
-                    label = "";
-                    command = "${controlCenterToggleCmd}; ${config.desktop.settingsCmd}";
-                  }
-                ];
+              widget-config = with config.desktop; {
+                menubar = {
+                  "menu#screenshot-menu" = {
+                    label = " Capture";
+                    position = "left";
+                    animation-type = "slide_down";
+                    animation-duration = 150;
+                    actions = [
+                      {
+                        label = "󰆟 Region";
+                        command = "${controlCenterToggleCmd}; ${screenshotRegionCmd}";
+                      }
+                      {
+                        label = "󰆟 Region +  Annotate";
+                        command = "${controlCenterToggleCmd}; ${screenshotRegionAndAnnotateCmd}";
+                      }
+                      {
+                        label = "󰹑 Monitor";
+                        command = "${controlCenterToggleCmd}; ${screenshotMonitorCmd}";
+                      }
+                      {
+                        label = "󱄽 Text (OCR)";
+                        command = "${controlCenterToggleCmd}; ${ocrCmd}";
+                      }
+                    ];
+                  };
+                  "buttons#tools" = {
+                    position = "right";
+                    actions = [
+                      {
+                        label = "";
+                        command = "${controlCenterToggleCmd}; ${colorPickerCmd}";
+                      }
+                      {
+                        label = "";
+                        command = "${controlCenterToggleCmd}; ${settingsCmd}";
+                      }
+                    ];
+                  };
+                };
                 dnd = { };
                 notifications = { };
                 title = { };
@@ -196,36 +223,63 @@
                   background: ${base0E};
                 }
 
-                /* Quick settings buttons */
+                /* Menubar: capture dropdown and tool buttons */
 
-                .widget-buttons-grid {
+                .widget-menubar {
                   padding: 12px;
                   margin: 0;
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button {
+                .widget-menubar .menu-button-bar button {
                   margin: 4px;
+                  padding: 0 14px;
                   border: 1px solid ${base02};
                   border-radius: 6px;
-                  min-height: 64px;
-                  min-width: 64px;
+                  min-height: 40px;
+                  min-width: 40px;
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button:hover {
+                .widget-menubar .menu-button-bar button:hover {
                   background: alpha(${base05}, .1);
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button:hover label {
+                .widget-menubar .menu-button-bar button:hover label {
                   color: ${base0E};
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button:active,
-                .widget-buttons-grid > flowbox > flowboxchild > button:checked {
+                .widget-menubar .menu-button-bar button:active,
+                .widget-menubar .menu-button-bar button:checked {
                   background: ${base0E};
                   border-color: ${base0E};
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button:active label,
-                .widget-buttons-grid > flowbox > flowboxchild > button:checked label {
+                .widget-menubar .menu-button-bar button:active label,
+                .widget-menubar .menu-button-bar button:checked label {
                   color: ${base00};
                 }
-                .widget-buttons-grid > flowbox > flowboxchild > button label {
+                .widget-menubar .tools button label {
                   font-size: 20px;
+                }
+
+                /* Capture dropdown items */
+
+                .widget-menubar .screenshot-menu {
+                  margin: 0;
+                  padding: 0;
+                }
+                .widget-menubar .screenshot-menu button {
+                  margin: 4px;
+                  padding: 10px 14px;
+                  border: 1px solid ${base02};
+                  border-radius: 6px;
+                }
+                .widget-menubar .screenshot-menu button:hover {
+                  background: alpha(${base05}, .1);
+                }
+                .widget-menubar .screenshot-menu button:hover label {
+                  color: ${base0E};
+                }
+                .widget-menubar .screenshot-menu button:active {
+                  background: ${base0E};
+                  border-color: ${base0E};
+                }
+                .widget-menubar .screenshot-menu button:active label {
+                  color: ${base00};
                 }
 
                 /* Do not disturb */

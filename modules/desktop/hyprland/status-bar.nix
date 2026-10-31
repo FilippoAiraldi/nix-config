@@ -20,172 +20,182 @@
         enable = true;
         systemd.enable = true;
 
-        settings = {
-          mainBar = {
-            layer = "top";
-            margin-top = 7;
-            margin-bottom = 1;
-            width = 2000; # instead of margin-left/right
-            height = 36;
+        settings =
+          let
+            midInterval = 5;
+            fastInterval = 1;
+          in
+          {
+            mainBar = {
+              layer = "top";
+              margin-top = 7;
+              margin-bottom = 1;
+              width = 2000; # instead of margin-left/right
+              height = 36;
 
-            modules-left = [
-              "group/power-group"
-              "cpu"
-              "memory"
-            ];
-            modules-center = [ "hyprland/workspaces" ];
-            modules-right = [
-              "tray"
-              "hyprland/language"
-              "custom/notifications"
-              "network"
-              "clock#date"
-              "clock#time"
-            ];
+              modules-left = [
+                "group/power-group"
+                "cpu"
+                "memory"
+              ];
+              modules-center = [ "hyprland/workspaces" ];
+              modules-right = [
+                "tray"
+                "hyprland/language"
+                "custom/notifications"
+                "network"
+                "clock#date"
+                "clock#time"
+              ];
 
-            "clock#date" = {
-              format = "{:L%a %d/%m}";
-              tooltip-format = "<tt><small>{calendar}</small></tt>";
-              calendar = {
-                mode = "year";
-                mode-mon-col = 3;
-                weeks-pos = "right";
-                on-scroll = -1;
-                on-click-right = "mode";
-                format = {
-                  months = "<span color='#${colors.base06}'><b>{}</b></span>";
-                  days = "<span color='#${colors.base05}'><b>{}</b></span>";
-                  weeks = "<span color='#${colors.base0C}'><b>W{}</b></span>";
-                  weekdays = "<span color='#${colors.base0A}'><b>{}</b></span>";
-                  today = "<span color='#${colors.base08}'><b><u>{}</u></b></span>";
+              "clock#date" = {
+                format = "{:L%a %d/%m}";
+                tooltip-format = "<tt><small>{calendar}</small></tt>";
+                calendar = {
+                  mode = "year";
+                  mode-mon-col = 3;
+                  weeks-pos = "right";
+                  on-scroll = -1;
+                  on-click-right = "mode";
+                  format = {
+                    months = "<span color='#${colors.base06}'><b>{}</b></span>";
+                    days = "<span color='#${colors.base05}'><b>{}</b></span>";
+                    weeks = "<span color='#${colors.base0C}'><b>W{}</b></span>";
+                    weekdays = "<span color='#${colors.base0A}'><b>{}</b></span>";
+                    today = "<span color='#${colors.base08}'><b><u>{}</u></b></span>";
+                  };
+                };
+                actions = {
+                  on-click-right = "mode";
+                  on-scroll-up = "shift_up";
+                  on-scroll-down = "shift_down";
                 };
               };
-              actions = {
-                on-click-right = "mode";
-                on-scroll-up = "shift_up";
-                on-scroll-down = "shift_down";
+              "clock#time" = {
+                interval = fastInterval;
+                format = "{:L%H:%M}";
+                format-alt = "{:L%H:%M:%S}";
+                timezone-tooltip-format = "{:%H:%M %Z}";
+                timezones = [
+                  "CET"
+                  "GMT"
+                  "UTC"
+                ];
+                tooltip-format = "{tz_list}";
               };
-            };
-            "clock#time" = {
-              format = "{:L%H:%M}";
-              timezone-tooltip-format = "{:%H:%M %Z}";
-              timezones = [
-                "CET"
-                "GMT"
-                "UTC"
-              ];
-              tooltip-format = "{tz_list}";
-            };
-            cpu = {
-              format = "{usage:>2}% ";
-              format-alt = "{load} ";
-            };
-            "custom/lock" = {
-              format = "󰍁";
-              tooltip = true;
-              tooltip-format = "Lock";
-              on-click = desktop.lockScreenCmd;
-            };
-            "custom/notifications" = {
-              format = "{icon}";
-              format-icons = {
-                notification = "󱅫";
-                none = "󰂜";
-                dnd-notification = "󰂠";
-                dnd-none = "󰪓";
-                inhibited-notification = "󰂛";
-                inhibited-none = "󰪑";
-                dnd-inhibited-notification = "󰂛";
-                dnd-inhibited-none = "󰪑";
+              cpu = {
+                interval = midInterval;
+                format = "{usage:>2}% ";
+                format-alt = "{load} ";
               };
-              return-type = "json";
-              exec-if = "which swaync-client";
-              exec = desktop.controlCenterSubscribeCmd;
-              on-click = desktop.controlCenterToggleCmd;
-              on-click-right = desktop.controlCenterDoNotDisturbCmd;
-              escape = true;
-              tooltip = true;
-            };
-            "custom/power" = {
-              format = "";
-              tooltip = true;
-              tooltip-format = "Shutdown";
-              on-click = "${pkgs.systemd}/bin/systemctl poweroff";
-            };
-            "custom/quit" = {
-              format = "󰗼";
-              tooltip = true;
-              tooltip-format = "Quit Hyprland";
-              on-click = lib.getExe pkgs.hyprshutdown;
-            };
-            "custom/reboot" = {
-              format = "󰜉";
-              tooltip = true;
-              tooltip-format = "Reboot";
-              on-click = "reboot";
-            };
-            "group/power-group" = {
-              orientation = "horizontal";
-              drawer = {
-                children-class = "not-power";
-                transition-duration = 0;
-                transition-left-to-right = true;
+              "custom/lock" = {
+                format = "󰍁";
+                tooltip = true;
+                tooltip-format = "Lock";
+                on-click = desktop.lockScreenCmd;
               };
-              modules = [
-                "custom/power"
-                "custom/quit"
-                "custom/lock"
-                "custom/reboot"
-              ];
-            };
-            "hyprland/language" = {
-              format = "󰌌 {}";
-              format-en = "EN";
-              format-it = "IT";
-              keyboard-name = "at-translated-set-2-keyboard";
-            };
-            "hyprland/workspaces" = {
-              format = "{name} {windows}";
-              on-click = "activate";
-              window-rewrite-default = "";
-              window-rewrite = {
-                firefox = "󰈹";
-                foot = "";
-                htop = "󰄨";
-                librewolf = "󰩃";
-                vicinae = "";
-                xdg-desktop-portal = "";
+              "custom/notifications" = {
+                format = "{icon}";
+                format-icons = {
+                  notification = "󱅫";
+                  none = "󰂜";
+                  dnd-notification = "󰂠";
+                  dnd-none = "󰪓";
+                  inhibited-notification = "󰂛";
+                  inhibited-none = "󰪑";
+                  dnd-inhibited-notification = "󰂛";
+                  dnd-inhibited-none = "󰪑";
+                };
+                return-type = "json";
+                exec-if = "which swaync-client";
+                exec = desktop.controlCenterSubscribeCmd;
+                on-click = desktop.controlCenterToggleCmd;
+                on-click-right = desktop.controlCenterDoNotDisturbCmd;
+                escape = true;
+                tooltip = true;
               };
-            };
-            memory = {
-              format = "{used:0.1f}/{total:0.0f}GiB";
-              format-alt = "{percentage}% ";
-              tooltip-format = "{used:0.1f}GiB used\n{avail:0.1f}GiB avail\n{total:0.1f}GiB total\n{swapUsed:0.1f}GiB swap used\n{swapAvail:0.1f}GiB swap avail\n{swapTotal:0.1f}GiB swap total";
-            };
-            network = {
-              interval = 5;
-              format-wifi = "{icon}";
-              format-icons = [
-                "󰤯"
-                "󰤟"
-                "󰤢"
-                "󰤥"
-                "󰤨"
-              ];
-              format-ethernet = "󰀂";
-              format-alt = "󱛇";
-              format-disconnected = "󰖪";
-              tooltip-format-wifi = "{icon} {essid}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
-              tooltip-format-ethernet = "󰀂  {ifname}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
-              tooltip-format-disconnected = "Disconnected";
-              # on-click = "nm-connection-editor"; # TODO: install connection editor
-            };
-            tray = {
-              icon-size = 18;
-              spacing = 10;
+              "custom/power" = {
+                format = "";
+                tooltip = true;
+                tooltip-format = "Shutdown";
+                on-click = "${pkgs.systemd}/bin/systemctl poweroff";
+              };
+              "custom/quit" = {
+                format = "󰗼";
+                tooltip = true;
+                tooltip-format = "Quit Hyprland";
+                on-click = lib.getExe pkgs.hyprshutdown;
+              };
+              "custom/reboot" = {
+                format = "󰜉";
+                tooltip = true;
+                tooltip-format = "Reboot";
+                on-click = "reboot";
+              };
+              "group/power-group" = {
+                orientation = "horizontal";
+                drawer = {
+                  children-class = "not-power";
+                  transition-duration = 0;
+                  transition-left-to-right = true;
+                };
+                modules = [
+                  "custom/power"
+                  "custom/quit"
+                  "custom/lock"
+                  "custom/reboot"
+                ];
+              };
+              "hyprland/language" = {
+                format = "󰌌 {}";
+                format-en = "EN";
+                format-it = "IT";
+                keyboard-name = "at-translated-set-2-keyboard";
+              };
+              "hyprland/workspaces" = {
+                format = "{name} {windows}";
+                on-click = "activate";
+                window-rewrite-default = "";
+                window-rewrite = {
+                  firefox = "󰈹";
+                  foot = "";
+                  hyprmod = "";
+                  htop = "󰄨";
+                  librewolf = "󰩃";
+                  vicinae = "";
+                  xdg-desktop-portal = "";
+                };
+              };
+              memory = {
+                interval = midInterval;
+                format = "{used:0.1f}/{total:0.0f}GiB";
+                format-alt = "{percentage}% ";
+                tooltip-format = "{used:0.1f}GiB used\n{avail:0.1f}GiB avail\n{total:0.1f}GiB total\n{swapUsed:0.1f}GiB swap used\n{swapAvail:0.1f}GiB swap avail\n{swapTotal:0.1f}GiB swap total";
+              };
+              network = {
+                interval = midInterval;
+                format-wifi = "{icon}";
+                format-icons = [
+                  "󰤯"
+                  "󰤟"
+                  "󰤢"
+                  "󰤥"
+                  "󰤨"
+                ];
+                format-ethernet = "󰀂";
+                format-alt = "󱛇";
+                format-disconnected = "󰖪";
+                tooltip-format-wifi = "{icon} {essid}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
+                tooltip-format-ethernet = "󰀂  {ifname}\n{ipaddr}\n⇣{bandwidthDownBytes} ⇡{bandwidthUpBytes}";
+                tooltip-format-disconnected = "Disconnected";
+                # on-click = "nm-connection-editor"; # TODO: install connection editor
+              };
+              tray = {
+                icon-size = 18;
+                spacing = 10;
+              };
             };
           };
-        };
 
         style = with colors.withHashtag; ''
           * {

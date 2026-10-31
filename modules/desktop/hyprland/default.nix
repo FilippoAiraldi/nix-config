@@ -36,6 +36,7 @@ in
         homeManager.cursor
         homeManager.hyprexpo
         homeManager.settings
+        homeManager.scripts
         homeManager.status-bar
       ];
 
@@ -96,14 +97,12 @@ in
             done
           '';
           startupCmds = [
-            "${pkgs.swaybg}/bin/swaybg -i ${config.stylix.image} -m fill"
+            (desktop.setWallpaperFn config.stylix.image)
           ]
           ++ lib.optionals isVM [
             "${clipBridge}"
             "env GDK_BACKEND=x11 ${pkgs.open-vm-tools}/bin/vmtoolsd -n vmusr"
           ];
-          shutdownCmd =
-            if isVM then "hl.dsp.exit()" else "hl.dsp.exec_cmd('${lib.getExe pkgs.hyprshutdown}')";
         in
         {
           enable = true;
@@ -174,16 +173,11 @@ in
             '');
             bind = map mkArgs (
               [
-                # general & window management
+                # commands (often for other apps)
                 [
-                  (lua "mod .. ' + R'")
-                  (lua "hl.dsp.exec_cmd('hyprctl reload')")
-                  { description = "Reload config"; }
-                ]
-                [
-                  (lua "mod .. ' + M'")
-                  (lua shutdownCmd)
-                  { description = "Exit Hyprland"; }
+                  (lua "mod .. ' + H'")
+                  (lua "hl.dsp.exec_cmd('${desktop.hyprlandKeybindsMenuCmd}')")
+                  { description = "Show keybinds"; }
                 ]
                 [
                   (lua "mod .. ' + L'")
@@ -196,16 +190,6 @@ in
                   { description = "Control center"; }
                 ]
                 [
-                  "ALT + Q"
-                  (lua "hl.dsp.window.close()")
-                  { description = "Close window"; }
-                ]
-                [
-                  "SHIFT + ALT + Q"
-                  (lua "hl.dsp.window.kill()")
-                  { description = "Kill window"; }
-                ]
-                [
                   "ALT + RETURN"
                   (lua "hl.dsp.exec_cmd('${desktop.terminalCmd}')")
                   { description = "Open terminal"; }
@@ -214,6 +198,47 @@ in
                   "ALT + SPACE"
                   (lua "hl.dsp.exec_cmd('${desktop.appLauncherCmd}')")
                   { description = "Toggle app launcher"; }
+                ]
+                [
+                  "PRINT"
+                  (lua "hl.dsp.exec_cmd('${desktop.screenshotMonitorCmd}')")
+                  { description = "Screenshot monitor"; }
+                ]
+                [
+                  (lua "mod .. ' + SHIFT + S'")
+                  (lua "hl.dsp.exec_cmd('${desktop.screenshotRegionCmd}')")
+                  { description = "Screenshot a region"; }
+                ]
+                [
+                  (lua "mod .. ' + SHIFT + E'")
+                  (lua "hl.dsp.exec_cmd('${desktop.screenshotRegionAndAnnotateCmd}')")
+                  { description = "Screenshot a region and annotate image"; }
+                ]
+                [
+                  (lua "mod .. ' + SHIFT + T'")
+                  (lua "hl.dsp.exec_cmd('${desktop.ocrCmd}')")
+                  { description = "Extract text (OCR)"; }
+                ]
+                # general & window management
+                [
+                  (lua "mod .. ' + R'")
+                  (lua "hl.dsp.exec_cmd('hyprctl reload')")
+                  { description = "Reload config"; }
+                ]
+                [
+                  (lua "mod .. ' + M'")
+                  (lua desktop.shutdownCmd)
+                  { description = "Exit Hyprland"; }
+                ]
+                [
+                  "ALT + Q"
+                  (lua "hl.dsp.window.close()")
+                  { description = "Close window"; }
+                ]
+                [
+                  "SHIFT + ALT + Q"
+                  (lua "hl.dsp.window.kill()")
+                  { description = "Kill window"; }
                 ]
                 [
                   (lua "mod .. ' + MINUS'")
@@ -225,12 +250,6 @@ in
                   (lua "function() rescale_active_monitor('up') end")
                   { description = "Scale monitor up"; }
                 ]
-                [
-                  (lua "mod .. ' + H'")
-                  (lua "hl.dsp.exec_cmd('${desktop.hyprlandKeybindsMenuCmd}')")
-                  { description = "Show keybinds"; }
-                ]
-
                 # window focus, movement & resizing
                 [
                   "ALT + TAB"
