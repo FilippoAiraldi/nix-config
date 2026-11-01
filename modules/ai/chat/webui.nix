@@ -13,7 +13,7 @@
       # https://docs.openwebui.com/features/chat-conversations/web-search/providers/searxng
       config = {
         services.open-webui = {
-          enable = true;
+          enable = false;
           port = config.ai-chat-webuiPort;
           environment = {
             OLLAMA_BASE_URL = "http://127.0.0.1:${toString config.ai-chatPort}";
