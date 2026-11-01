@@ -203,7 +203,7 @@
 
         # copy Grafana's secret key
         systemd.services.grafana.serviceConfig.LoadCredential = [
-          "secret_key:/var/lib/secrets/grafana_secret_key"
+          "secret_key:${config.sops.secrets.grafana-secret-key.path}"
         ];
       };
     };

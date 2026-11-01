@@ -38,6 +38,7 @@ in
       nixos.networking-server
       nixos.proxy
       nixos.power-cycle
+      nixos.secrets-server
       nixos.services
     ];
   };
