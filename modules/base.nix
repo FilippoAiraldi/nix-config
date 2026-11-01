@@ -8,6 +8,11 @@ let
     generic.primaryUser
     generic.primaryUserHome
     generic.profile
+    nixos.bash
+    nixos.locale
+    nixos.nixvim
+    nixos.packages
+    nixos.users
   ];
 in
 {
@@ -25,42 +30,26 @@ in
       nixos.ai-chat
       nixos.ai-chat-webui
       nixos.ai-decisions
-      nixos.bash
       nixos.boot-server
       nixos.dns
-      nixos.locale
       nixos.metasearch
       nixos.monitoring
       nixos.network-filesystem
       nixos.networking-server
-      nixos.nixvim
-      nixos.packages
       nixos.proxy
       nixos.power-cycle
       nixos.services
-      nixos.users
     ];
   };
 
   flake.modules.nixos.private = {
-    imports = commonImports ++ [
-      nixos.bash
-      nixos.boot-desktop
-      nixos.locale
-      nixos.networking-desktop
-      nixos.nixvim
-      nixos.packages
-      nixos.users
-    ];
+    imports = commonImports;
   };
 
-  flake.modules.nixos.wsl = {
+  flake.modules.nixos.private-desktop = {
     imports = commonImports ++ [
-      nixos.bash
-      nixos.locale
-      nixos.nixvim
-      nixos.packages
-      nixos.users
+      nixos.boot-desktop
+      nixos.networking-desktop
     ];
     home-manager.sharedModules = [ homeManager.pi-coding-agent ];
   };
