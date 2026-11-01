@@ -11,6 +11,7 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 ├── flake.nix            # Inputs; imports everything in modules/
 ├── justfile             # Common rebuild, update, and check commands
 ├── assets/              # Images and other files
+├── secrets/             # SOPS-encrypted secrets
 └── modules/
     ├── ai/              # AI features (a Nix module plus the code it runs)
     ├── configurations/  # Instantiates hosts and generates system checks
@@ -27,8 +28,9 @@ The repo is forked from and follows [Alex Nabokikh's config](https://github.com/
 
 ## Conventions
 
-- Files under `modules/nixos/`, or `modules/programs/` typically declare modules of a single class (`nixos.*`, `homeManager.*`). Vertical program features may declare modules for more than one class.
-- `modules/base.nix` collects default workstation features into `nixos.base` and `homeManager.base`. Opt-in features are composed by their owning host or parent feature instead.
+- Files under `modules/nixos/` or `modules/programs/` typically declare modules of a single class (`nixos.*`, `homeManager.*`). Vertical program features may declare modules for more than one class.
+- `modules/base.nix` collects default workstation features into, e.g., `nixos.server` and `homeManager.base`. Opt-in features are composed by their owning host or parent feature instead.
 - `modules/ai/<feature>/` holds vertical features that ship their own non-Nix code (e.g., a Python service), documented in a README next to the code (see [decisions](modules/ai/decisions/README.md), [chat](modules/ai/chat/README.md)). Only its `.nix` files are picked up by `import-tree`.
 - Files and directories prefixed with `_` (for example `_hardware.nix`) are skipped by `import-tree` and imported explicitly where needed.
+- Secrets are managed with SOPS and age keys.
 
