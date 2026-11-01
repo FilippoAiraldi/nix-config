@@ -8,7 +8,7 @@ in
     imports = [
       inputs.nixos-hardware.nixosModules.common-cpu-intel
       ./_hardware.nix
-      nixos.private
+      nixos.private-desktop
       nixos.xfce
     ];
 

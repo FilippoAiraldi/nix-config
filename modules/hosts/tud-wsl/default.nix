@@ -7,7 +7,7 @@ in
   configurations.wsl.${hostName}.module = {
 
     imports = [
-      config.flake.modules.nixos.wsl
+      config.flake.modules.nixos.private
     ];
     nixpkgs.hostPlatform = "x86_64-linux";
     system.stateVersion = "25.11";
