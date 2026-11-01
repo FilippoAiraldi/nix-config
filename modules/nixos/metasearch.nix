@@ -13,7 +13,7 @@
       # https://docs.searxng.org/admin/settings/index.html
       config.services.searx = {
         enable = true;
-        environmentFile = "/var/lib/secrets/searxng.env";
+        environmentFile = config.sops.secrets.searxng-env.path;
         settings.search.formats = [
           "html"
           "json" # needed by Open-WebUI (see ai/chat/webui.nix)

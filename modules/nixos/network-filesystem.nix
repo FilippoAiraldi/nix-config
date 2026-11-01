@@ -77,7 +77,7 @@
             group = "users";
 
             guiAddress = "127.0.0.1:${toString config.syncthingPort}";
-            guiPasswordFile = "/secrets/syncthing/gui-passwd"; # manually created
+            guiPasswordFile = config.sops.secrets.syncthing-gui-passwd.path;
 
             settings = {
               gui = {
