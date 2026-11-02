@@ -23,6 +23,7 @@ in
       nixos.ssh
     ];
     home-manager.sharedModules = [
+      homeManager.pi-coding-agent
       homeManager.secrets
       homeManager.ssh
     ];
