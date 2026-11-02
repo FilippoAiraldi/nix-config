@@ -1,7 +1,9 @@
 { config, ... }:
 let
   inherit (config.flake.modules) generic nixos homeManager;
-  commonImports = [
+in
+{
+  flake.modules.nixos.common.imports = [
     generic.homeManagerIntegration
     generic.hostName
     generic.nixSettings
@@ -14,57 +16,55 @@ let
     nixos.packages
     nixos.users
   ];
-in
-{
-  flake.modules.generic.homeManagerIntegration = {
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      sharedModules = [ homeManager.base ];
-    };
-  };
-
-  flake.modules.nixos.server = {
-    imports = commonImports ++ [
-      generic.localIPAddr
-      nixos.ai-chat
-      nixos.ai-chat-webui
-      nixos.ai-decisions
-      nixos.boot-server
-      nixos.dns
-      nixos.metasearch
-      nixos.monitoring
-      nixos.network-filesystem
-      nixos.networking-server
-      nixos.proxy
-      nixos.power-cycle
-      nixos.secrets-server
-      nixos.services
-    ];
-  };
 
   flake.modules.nixos.private = {
-    imports = commonImports;
-  };
-
-  flake.modules.nixos.private-desktop = {
-    imports = commonImports ++ [
-      nixos.boot-desktop
-      nixos.networking-desktop
+    imports = [
+      nixos.common
+      nixos.ssh
     ];
     home-manager.sharedModules = [ homeManager.pi-coding-agent ];
   };
 
-  flake.modules.homeManager.base = {
-    imports = [
-      generic.profile
-      homeManager.bash
-      homeManager.eza
-      homeManager.fzf
-      homeManager.git
-      homeManager.nixvim
-      homeManager.packages
-      homeManager.zellij
-    ];
+  flake.modules.nixos.private-desktop.imports = [
+    nixos.private
+    nixos.boot-desktop
+    nixos.networking-desktop
+  ];
+
+  flake.modules.nixos.server.imports = [
+    nixos.common
+    generic.localIPAddr
+    nixos.ai-chat
+    nixos.ai-chat-webui
+    nixos.ai-decisions
+    nixos.boot-server
+    nixos.dns
+    nixos.metasearch
+    nixos.monitoring
+    nixos.network-filesystem
+    nixos.networking-server
+    nixos.proxy
+    nixos.power-cycle
+    nixos.secrets
+    nixos.services
+  ];
+
+  flake.modules.generic.homeManagerIntegration.home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    sharedModules = [ homeManager.base ];
   };
+
+  flake.modules.homeManager.base.imports = [
+    generic.profile
+    homeManager.bash
+    homeManager.eza
+    homeManager.fzf
+    homeManager.git
+    homeManager.nixvim
+    homeManager.packages
+    homeManager.secrets
+    homeManager.ssh
+    homeManager.zellij
+  ];
 }
