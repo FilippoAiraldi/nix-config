@@ -1,0 +1,12 @@
+keys:
+  - &CRAPPY_SERVER age1ny8zh9jhrsaxveskzq3pv59k8a7mnrndu0ead7g4z9pmkwwzsqmqpw6ux5
+  - &TUD_WSL_FAIRALDI age1e6tqn9z2h9v6z2hmlgmfch836ktkttdmgpjuzgfgznqwdcvvk5gsycruua
+creation_rules:
+  - path_regex: secrets/server\.yaml$
+    key_groups:
+      - age:
+          - *CRAPPY_SERVER
+  - path_regex: secrets/fairaldi\.yaml$
+    key_groups:
+      - age:
+          - *TUD_WSL_FAIRALDI

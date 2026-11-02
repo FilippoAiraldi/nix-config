@@ -7,14 +7,17 @@ in
   configurations.wsl.${hostName}.module = {
 
     imports = [
-      config.flake.modules.nixos.wsl
+      config.flake.modules.nixos.private
     ];
     nixpkgs.hostPlatform = "x86_64-linux";
     system.stateVersion = "25.11";
 
     # https://nix-community.github.io/NixOS-WSL/how-to/change-username.html
     inherit hostName primaryUser;
-    wsl.defaultUser = primaryUser;
+    wsl = {
+      defaultUser = primaryUser;
+      interop.includePath = false;
+    };
     users.users.${primaryUser}.uid = 1001; # solves a bug; found via `id -u fairaldi`
   };
 }

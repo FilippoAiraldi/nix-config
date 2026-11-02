@@ -21,7 +21,7 @@
       config.networking = {
         wireless = {
           enable = true;
-          secretsFile = "/var/lib/secrets/wireless.conf";
+          secretsFile = config.sops.secrets.wireless.path;
           networks."Our Little Home v2".pskRaw = "ext:psk_home";
         };
 
