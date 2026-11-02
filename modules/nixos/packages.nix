@@ -25,7 +25,10 @@
 
       programs.git = {
         enable = true;
-        config.alias.lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+        config = {
+          alias.lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+          credential.helper = "cache --timeout=10800";
+        };
       };
     };
 }
