@@ -28,6 +28,7 @@
         config = {
           alias.lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
           credential.helper = "cache --timeout=10800";
+          safe.directory = "/etc/nixos/home";
         };
       };
     };

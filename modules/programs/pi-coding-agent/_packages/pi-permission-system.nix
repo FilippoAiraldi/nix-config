@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 {
   programs.pi-coding-agent.settings.packages = [ "npm:@gotgenes/pi-permission-system" ];
 
@@ -32,9 +32,9 @@
         };
 
         edit = {
-            "*" = "ask";
-            "*.lock" = "deny";
-            "*/.git/*" = "deny";
+          "*" = "ask";
+          "*.lock" = "deny";
+          "*/.git/*" = "deny";
         };
         read = {
           "*" = "allow";

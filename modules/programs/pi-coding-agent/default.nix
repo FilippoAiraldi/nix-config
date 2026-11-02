@@ -5,6 +5,7 @@
       imports = [
         ./_packages/pi-permission-system.nix
         ./_packages/pi-sandbox.nix
+        # ./_packages/pi-ssh-remote.nix
       ];
 
       programs.pi-coding-agent = {
